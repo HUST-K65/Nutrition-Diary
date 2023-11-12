@@ -1,4 +1,6 @@
 {
-  "name": "myapp",
-  "displayName": "myapp"
+  "expo": {
+    "name": "login-ui",
+    "slug": "login-ui"
+  }
 }

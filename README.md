@@ -5,6 +5,11 @@
     - Link setup environment : https://reactnative.dev/docs/environment-setup?guide=native
     - Link guide setup environment : https://www.youtube.com/watch?v=cCcvNAEpF-4
 
+## Full Course React Native : 
+```
+https://www.youtube.com/watch?v=obH0Po_RdWk
+```
+
 ## How to run this app?
 Clone this repo 
 ```
