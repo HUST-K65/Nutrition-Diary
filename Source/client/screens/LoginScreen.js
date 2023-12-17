@@ -5,12 +5,13 @@ import { useNavigation } from '@react-navigation/native'
 import { useState, useEffect } from 'react'
 import Animated, { FadeIn, FadeInDown, FadeInUp } from 'react-native-reanimated';
 import axios from 'axios';
+import test from '../data/api/test'
 
 
 export default function LoginScreen() {
     const navigation = useNavigation();
-    let [isLoading, setIsLoading] = useState(true);
-    let [error, setError] = useState();
+    // let [isLoading, setIsLoading] = useState(true);
+    // let [error, setError] = useState();
     let [response, setResponse] = useState('');
 
 
@@ -19,7 +20,6 @@ export default function LoginScreen() {
         url: `https://jsonplaceholder.typicode.com/users`,
     }).then((response) => {
         let city = response.data[0]['address'].city;
-        console.log(city);
         setResponse(city);
 
     });
@@ -49,6 +49,7 @@ export default function LoginScreen() {
 
     // console.log(response);
 
+
     return (
         <View className="bg-white h-full w-full">
             <StatusBar style="light" />
@@ -75,7 +76,7 @@ export default function LoginScreen() {
                     <Animated.Text
                         entering={FadeInUp.duration(1000).springify()}
                         className="text-white font-bold tracking-wider text-5xl">
-                        Login
+                        {response}
                     </Animated.Text>
                 </View>
 
@@ -105,7 +106,10 @@ export default function LoginScreen() {
                         className="w-full"
                         entering={FadeInDown.delay(400).duration(1000).springify()}>
 
-                        <TouchableOpacity className="w-full bg-sky-400 p-3 rounded-2xl mb-3">
+                        <TouchableOpacity
+                            className="w-full bg-sky-400 p-3 rounded-2xl mb-3"
+                            onPress={() => navigation.push('Homepage')}
+                        >
                             <Text className="text-xl font-bold text-white text-center">Login</Text>
                         </TouchableOpacity>
                     </Animated.View>
