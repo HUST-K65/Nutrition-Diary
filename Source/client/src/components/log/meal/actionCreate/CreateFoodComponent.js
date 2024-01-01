@@ -1,30 +1,67 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState, memo, useMemo } from 'react'
 import { ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import * as Icon from "react-native-feather";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import AntDesign from 'react-native-vector-icons/AntDesign'
+import CheckBox from 'react-native-check-box'
 
-const cssInputFocus = {
-    border: "border-2 border-orange-500",
+const cssInput = {
+    borderFocused: "border-2 border-orange-500",
+    borderUnFocused: "border-2 border-gray-300",
+    placeholderTextColorFocused: "orange",
+    placeholderTextColorUnFocused: "gray",
+    styles: {
+        fontSize: 18
+    }
 }
+
+const fakeServing = [
+    {
+        name: "Serving Weight",
+        weight: 152,
+        unit: "grams"
+    },
+    {
+        name: "Serving Volumns",
+        weight: 709.76,
+        unit: "Milliliters"
+    },
+    {
+        name: "Serving Amount",
+        weight: 7,
+        unit: "1/10 Cans"
+    },
+    {
+        name: "Serving Amount",
+        weight: 7,
+        unit: "1/10 Containers"
+    },
+]
 
 export default function CreateFoodComponent() {
     const navigation = useNavigation();
-    const [focusInput, setFocusInput] = useState();
+    const [indexInputFocus, setIndexInputFocus] = useState(1);
+    const [selectedCheckbox, setSelectedCheckbox] = useState(false);
     const textInputRef = useRef(null);
 
-
-    const handleCheckFocus = () => {
+    useEffect(() => {
         textInputRef.current.focus();
-        console.log(textInputRef.current)
-        textInputRef.current.className = "border-orange-500 w-64";
-        textInputRef.current.placeholder = 'Search';
-        setFocusInput(true);
-        if (textInputRef.current) {
-            const focused = textInputRef.current.isFocused();
-            console.log('Is TextInput focused?', focused);
-        }
-    };
+    }, []);
+
+    let fakeSerivingData = useMemo(() => {
+        return fakeServing.map((item, index) => {
+            return (
+                <TouchableOpacity key={index} className="p-2 w-full border-b-2 border-gray-200">
+                    <Text className="text-lg font-bold">{item.name}</Text>
+                    <View className="flex-row space-x-4">
+                        <Text>{item.weight}</Text>
+                        <Text>{item.unit}</Text>
+                    </View>
+                </TouchableOpacity>
+            )
+        })
+    }, [fakeServing]);
 
     return (
         <View>
@@ -38,26 +75,147 @@ export default function CreateFoodComponent() {
                 <Text className="text-white text-sm">Save</Text>
             </View>
             <ScrollView
-                className="mt-20"
+                className="mt-20 p-3 space-y-5"
                 showsVerticalScrollIndicator={false}
             >
-                <View className="flex-row flex-1 bg-white space-x-6">
-                    <MaterialCommunityIcons name="food-fork-drink" size={30} />
-                    <View className="p-3">
+                <View className="flex-row flex-1 bg-white space-x-6 p-3 rounded-xl items-start">
+                    <MaterialCommunityIcons name="food-fork-drink" size={40} />
+                    <View className="space-y-4 items-center">
                         <TextInput
                             ref={textInputRef}
-                            className="border-2 border-gray-300 w-64"
+                            placeholder="Food Name (required)"
+                            style={cssInput.styles}
+                            placeholderTextColor={indexInputFocus === 1 ? cssInput.placeholderTextColorFocused : cssInput.placeholderTextColorUnFocused}
+                            onFocus={() => setIndexInputFocus(1)}
+                            className={"rounded-xl p-3 h-16 w-64 " + (indexInputFocus === 1 ? cssInput.borderFocused : cssInput.borderUnFocused)}
                         >
-
+                        </TextInput>
+                        <TextInput
+                            onFocus={() => setIndexInputFocus(2)}
+                            placeholder="Brand Name"
+                            style={cssInput.styles}
+                            placeholderTextColor={indexInputFocus === 2 ? cssInput.placeholderTextColorFocused : cssInput.placeholderTextColorUnFocused}
+                            className={"rounded-xl p-3 h-16 w-64 " + (indexInputFocus === 2 ? cssInput.borderFocused : cssInput.borderUnFocused)}
+                        >
                         </TextInput>
                     </View>
                 </View>
-                <TouchableOpacity onPress={handleCheckFocus}>
-                    <Text>check</Text>
-                </TouchableOpacity>
+                <View>
+                    <Text className="text-2xl">Nutrition Facts</Text>
+                    <Text className="text-sm text-gray-400">Servings should contain the same number of calories</Text>
+                </View>
+                <View className="bg-white space-y-4 p-3 rounded-xl">
+                    {
+                        fakeSerivingData
+                    }
+                    <TouchableOpacity
+                        className="flex-row space-x-6"
+                    >
+                        <AntDesign name="plus" size={24} style={{ color: "blue" }} />
+                        <Text className="text-blue-500 text-sm">Add Serving Amount</Text>
+                    </TouchableOpacity>
+                </View>
+                <View style={{
+                    marginLeft: "auto",
+                    marginRight: 0,
+                }}>
+                    <Text className="text-gray-500 text-sm">one serving required</Text>
+                </View>
+                <View className="bg-white space-y-4 p-4 rounded-xl">
+                    <TextInput
+                        placeholder="Calories (required)"
+                        style={cssInput.styles}
+                        placeholderTextColor={indexInputFocus === 3 ? cssInput.placeholderTextColorFocused : cssInput.placeholderTextColorUnFocused}
+                        onFocus={() => setIndexInputFocus(3)}
+                        className={"rounded-xl p-3 h-16 w-84 " + (indexInputFocus === 3 ? cssInput.borderFocused : cssInput.borderUnFocused)}
+                    >
+                    </TextInput>
+                    <View className="flex-row space-x-4">
+                        <TextInput
+                            placeholder="Fats (g)"
+                            style={cssInput.styles}
+                            placeholderTextColor={indexInputFocus === 4 ? cssInput.placeholderTextColorFocused : cssInput.placeholderTextColorUnFocused}
+                            onFocus={() => setIndexInputFocus(4)}
+                            className={"rounded-xl p-3 h-16 w-40 " + (indexInputFocus === 4 ? cssInput.borderFocused : cssInput.borderUnFocused)}
+                        >
+                        </TextInput>
+                        <TextInput
+                            placeholder="Saturated Fat (g)"
+                            style={cssInput.styles}
+                            placeholderTextColor={indexInputFocus === 5 ? cssInput.placeholderTextColorFocused : cssInput.placeholderTextColorUnFocused}
+                            onFocus={() => setIndexInputFocus(5)}
+                            className={"rounded-xl p-3 h-16 w-40 " + (indexInputFocus === 5 ? cssInput.borderFocused : cssInput.borderUnFocused)}
+                        >
+                        </TextInput>
+                    </View>
+                    <View className="flex-row space-x-4">
+                        <TextInput
+                            placeholder="Cholesterol (mg)"
+                            style={cssInput.styles}
+                            placeholderTextColor={indexInputFocus === 6 ? cssInput.placeholderTextColorFocused : cssInput.placeholderTextColorUnFocused}
+                            onFocus={() => setIndexInputFocus(6)}
+                            className={"rounded-xl p-3 h-16 w-40 " + (indexInputFocus === 6 ? cssInput.borderFocused : cssInput.borderUnFocused)}
+                        >
+                        </TextInput>
+                        <TextInput
+                            placeholder="Sodium (mg)"
+                            style={cssInput.styles}
+                            placeholderTextColor={indexInputFocus === 7 ? cssInput.placeholderTextColorFocused : cssInput.placeholderTextColorUnFocused}
+                            onFocus={() => setIndexInputFocus(7)}
+                            className={"rounded-xl p-3 h-16 w-40 " + (indexInputFocus === 7 ? cssInput.borderFocused : cssInput.borderUnFocused)}
+                        >
+                        </TextInput>
+                    </View>
+                    <View className="flex-row space-x-4">
+                        <TextInput
+                            placeholder="Carbohydrates (g)"
+                            style={cssInput.styles}
+                            placeholderTextColor={indexInputFocus === 8 ? cssInput.placeholderTextColorFocused : cssInput.placeholderTextColorUnFocused}
+                            onFocus={() => setIndexInputFocus(8)}
+                            className={"rounded-xl p-3 h-16 w-40 " + (indexInputFocus === 8 ? cssInput.borderFocused : cssInput.borderUnFocused)}
+                        >
+                        </TextInput>
+                        <TextInput
+                            placeholder="Fiber (mg)"
+                            style={cssInput.styles}
+                            placeholderTextColor={indexInputFocus === 9 ? cssInput.placeholderTextColorFocused : cssInput.placeholderTextColorUnFocused}
+                            onFocus={() => setIndexInputFocus(9)}
+                            className={"rounded-xl p-3 h-16 w-40 " + (indexInputFocus === 9 ? cssInput.borderFocused : cssInput.borderUnFocused)}
+                        >
+                        </TextInput>
+                    </View>
+                    <View className="flex-row space-x-4">
+                        <TextInput
+                            placeholder="Sugars (g)"
+                            style={cssInput.styles}
+                            placeholderTextColor={indexInputFocus === 10 ? cssInput.placeholderTextColorFocused : cssInput.placeholderTextColorUnFocused}
+                            onFocus={() => setIndexInputFocus(10)}
+                            className={"rounded-xl p-3 h-16 w-40 " + (indexInputFocus === 10 ? cssInput.borderFocused : cssInput.borderUnFocused)}
+                        >
+                        </TextInput>
+                        <TextInput
+                            placeholder="Protein (g)"
+                            style={cssInput.styles}
+                            placeholderTextColor={indexInputFocus === 11 ? cssInput.placeholderTextColorFocused : cssInput.placeholderTextColorUnFocused}
+                            onFocus={() => setIndexInputFocus(11)}
+                            className={"rounded-xl p-3 h-16 w-40 " + (indexInputFocus === 11 ? cssInput.borderFocused : cssInput.borderUnFocused)}
+                        >
+                        </TextInput>
+                    </View>
+                </View>
+                <View className="bg-white space-y-4 p-4 rounded-xl mb-12">
+                    <Text className="text-lg font-bold">Share with the Community</Text>
+                    <View className="flex-row space-x-8">
+                        <View className="w-64">
+                            <Text className="text-sm text-gray-700">Other Lost It! user will be able to search for and log this food</Text>
+                        </View>
+                        <CheckBox
+                            onClick={() => setSelectedCheckbox(!selectedCheckbox)}
+                            isChecked={selectedCheckbox}
+                        />
+                    </View>
+                </View>
             </ScrollView>
         </View>
-
     )
-
 }

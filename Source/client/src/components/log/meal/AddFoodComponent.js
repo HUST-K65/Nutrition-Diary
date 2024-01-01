@@ -1,6 +1,6 @@
 import { useNavigation, useRoute } from '@react-navigation/native';
 import React, { useState } from 'react'
-import { Text, TouchableOpacity, View, TextInput, ScrollView, Image } from 'react-native'
+import { Text, TouchableOpacity, View, TextInput, Image, Modal, TouchableWithoutFeedback, StyleSheet } from 'react-native'
 import * as Icon from "react-native-feather";
 import Feather from "react-native-vector-icons/Feather"
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
@@ -13,6 +13,7 @@ function tabBarHeader(indexActive, setIndexActive, navigation = null) {
     const textColorActive = "text-orange-700";
     const textColorInactive = "text-white";
     const bgColorActive = { backgroundColor: "white" }
+    const [openModal, setOpenModal] = useState(false);
     return (
         <View className="bg-orange-500 h-32 p-5 space-y-4">
             <View className="flex-row items-center justify-center space-x-14">
@@ -25,8 +26,46 @@ function tabBarHeader(indexActive, setIndexActive, navigation = null) {
                     <Icon.Search height="25" width="25" stroke="white" />
                     <TextInput placeholder='Search' placeholderTextColor="white" style={{ fontSize: 20, color: "white" }} className="w-40 rounded-xl p-3" keyboardType='default' />
                 </View>
+                <TouchableOpacity
+                    onPress={() => setOpenModal(true)}
+                >
+                    <Icon.MoreVertical stroke="white" strokeWidth={3} />
+                </TouchableOpacity>
+                {
+                    openModal ?
+                        <Modal
+                            animationType="fade"
+                            transparent={true}
+                            visible={openModal}
+                        >
+                            <TouchableWithoutFeedback
+                                onPress={() => setOpenModal(false)}
+                            >
+                                <View style={styles.centeredView}>
+                                    <View style={styles.modalView}>
+                                        <TouchableOpacity
+                                            className="p-3"
+                                            onPress={() => navigation.navigate("CreateFood")}
+                                        >
+                                            <Text>Create Food</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity
+                                            className="p-3"
+                                            onPress={() => navigation.navigate("CreateCalories")}
+                                        >
+                                            <Text>Add Calories</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity
+                                            className="p-3"
+                                        >
+                                            <Text>Scan Barcode</Text>
+                                        </TouchableOpacity>
 
-                <Icon.MoreVertical stroke="white" strokeWidth={3} />
+                                    </View>
+                                </View>
+                            </TouchableWithoutFeedback>
+                        </Modal> : null
+                }
             </View>
             <View className="flex-1 flex-row items-center space-x-5 justify-center">
                 <TouchableOpacity
@@ -79,11 +118,16 @@ function bodySearchTemplate(indexActive, navigation) {
                     <MaterialCommunityIcons name="food-fork-drink" size={30} />
                     <Text className="text-lg">Create New Food</Text>
                 </TouchableOpacity>
-                <TouchableOpacity className="flex-row ml-6 items-center space-x-6">
+                <TouchableOpacity className="flex-row ml-6 items-center space-x-6"
+                    onPress={() => navigation.navigate("CreateRecipe")}
+                >
                     <Feather name="folder-plus" size={30} />
                     <Text className="text-lg">Create a Recipe</Text>
                 </TouchableOpacity>
-                <TouchableOpacity className="flex-row ml-6 items-center space-x-6">
+                <TouchableOpacity
+                    onPress={() => navigation.navigate("CreateCalories")}
+                    className="flex-row ml-6 items-center space-x-6"
+                >
                     <FontAwesome5 name="cart-plus" size={30} />
                     <Text className="text-lg">Add Calories</Text>
                 </TouchableOpacity>
@@ -131,7 +175,7 @@ function bodyMyFoodsTemplate(indexActive, setIndexActive, navigation) {
                 }
                 <View className="space-y-8">
                     <View className="p-3">
-                        <Text className="text-lg">Lof New Food</Text>
+                        <Text className="text-lg">Log New Food</Text>
                     </View>
                     <TouchableOpacity
                         className="flex-row ml-6 items-center space-x-6"
@@ -147,11 +191,17 @@ function bodyMyFoodsTemplate(indexActive, setIndexActive, navigation) {
                         <MaterialCommunityIcons name="food-fork-drink" size={30} />
                         <Text className="text-lg">Create New Food</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity className="flex-row ml-6 items-center space-x-6">
+                    <TouchableOpacity
+                        className="flex-row ml-6 items-center space-x-6"
+                        onPress={() => navigation.navigate("CreateRecipe")}
+                    >
                         <Feather name="folder-plus" size={30} />
                         <Text className="text-lg">Create a Recipe</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity className="flex-row ml-6 items-center space-x-6">
+                    <TouchableOpacity
+                        onPress={() => navigation.navigate("CreateCalories")}
+                        className="flex-row ml-6 items-center space-x-6"
+                    >
                         <FontAwesome5 name="cart-plus" size={30} />
                         <Text className="text-lg">Add Calories</Text>
                     </TouchableOpacity>
@@ -198,7 +248,7 @@ function bodyMealsTemplate(indexActive, timeToMeal) {
     }
 }
 
-function bodyRecipesTemplate(indexActive) {
+function bodyRecipesTemplate(indexActive, navigation) {
     if (indexActive === 3) {
         return (
             <Animated.ScrollView
@@ -208,6 +258,7 @@ function bodyRecipesTemplate(indexActive) {
             >
                 <View className="items-center p-3 border-b-2 border-gray-100">
                     <TouchableOpacity
+                        onPress={() => navigation.navigate("CreateRecipe")}
                     >
                         <Text className="text-lg text-blue-500 font-semibold">Create Recipe</Text>
                     </TouchableOpacity>
@@ -249,22 +300,36 @@ function bodyRecipesTemplate(indexActive) {
     }
 }
 
-function footerTemplate(timeToMeal = "") {
+function footerTemplate(timeToMeal = null, dataItems = null, navigation = null) {
     let { nameIcon, colorBgIcon } = getCssByTimeToMeal(timeToMeal);
+    if (timeToMeal) {
+        return (
+            <View className="absolute flex-row items-center justify-between bottom-0 w-full h-16 bg-blue-500 p-2 pr-4 pl-4">
+                <View className="flex-row items-center space-x-4">
+                    <View className={"rounded-full " + colorBgIcon + " p-3"}>
+                        <Feather name={nameIcon} size={22} style={{ color: "white" }} />
+                        {
+                            dataItems && dataItems.length ?
+                                <View className="absolute top-0 left-9 w-4 h-4 rounded-full bg-white items-center">
+                                    <Text className="text-blue-500 font-bold" style={{ fontSize: 12 }}>{dataItems.length}</Text>
+                                </View> : null
+                        }
+                    </View>
+                    <TouchableOpacity
+                        onPress={() => navigation.navigate("MealSummary", { timeToMeal, dataItems })}
+                    >
+                        <Text className="text-white text-2xl">{timeToMeal}</Text>
+                    </TouchableOpacity>
 
-    return (
-        <View className="absolute flex-row items-center justify-between bottom-0 w-full h-16 bg-blue-500 p-2 pr-4 pl-4">
-            <View className="flex-row items-center space-x-4">
-                <View className={"rounded-full " + colorBgIcon + " p-3"}>
-                    <Feather name={nameIcon} size={22} style={{ color: "white" }} />
                 </View>
-                <Text className="text-white text-2xl">{timeToMeal}</Text>
+                <TouchableOpacity
+                    onPress={() => navigation.navigate("Homepage")}
+                >
+                    <Text className="text-white text-lg font-bold">Done</Text>
+                </TouchableOpacity>
             </View>
-            <TouchableOpacity>
-                <Text className="text-white text-lg font-bold">Done</Text>
-            </TouchableOpacity>
-        </View>
-    )
+        )
+    }
 }
 
 function getCssByTimeToMeal(timeToMeal) {
@@ -297,16 +362,41 @@ export default function AddFoodComponent() {
     const [indexActive, setIndexActive] = useState(0);
     const navigation = useNavigation();
     let { params } = useRoute();
-    let timeToMeal = params.timeToMeal;
+    let timeToMeal = params?.timeToMeal;
+    let dataItems = params?.dataItems;
+
     return (
         <View className="w-full h-full bg-white">
             {tabBarHeader(indexActive, setIndexActive, navigation)}
             {bodySearchTemplate(indexActive, navigation)}
             {bodyMyFoodsTemplate(indexActive, setIndexActive, navigation)}
             {bodyMealsTemplate(indexActive, timeToMeal)}
-            {bodyRecipesTemplate(indexActive)}
-            {footerTemplate(timeToMeal)}
+            {bodyRecipesTemplate(indexActive, navigation)}
+            {footerTemplate(timeToMeal, dataItems, navigation)}
         </View>
     )
-
 }
+
+const styles = StyleSheet.create({
+    centeredView: {
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    modalView: {
+        position: "absolute",
+        top: 0,
+        right: 0,
+        backgroundColor: "white",
+        borderRadius: 10,
+        width: "40%",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+    },
+});

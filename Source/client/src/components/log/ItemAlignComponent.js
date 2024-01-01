@@ -2,10 +2,10 @@ import React from 'react'
 import { Text, View, ScrollView, Image, TouchableOpacity } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 
-function addAction(navigation, category, timeToMeal = null) {
+function addAction(navigation, category, items, timeToMeal = null) {
     let path = "";
     path = category ? "Add" + category : "";
-    timeToMeal ? navigation.navigate(path, { timeToMeal }) : navigation.navigate(path)
+    timeToMeal ? navigation.navigate(path, { dataItems: items, timeToMeal }) : navigation.navigate(path)
 }
 
 export default function ItemAlignComponent({ items, collapsed, category, time }) {
@@ -33,7 +33,7 @@ export default function ItemAlignComponent({ items, collapsed, category, time })
                         </ScrollView>
                         <TouchableOpacity
                             className="rounded-full bg-sky-200 p-4 items-center ml-2"
-                            onPress={() => addAction(navigation, category, time)}
+                            onPress={() => addAction(navigation, category, items, time)}
                         >
                             <Text className="text-sky-600">Add {category}</Text>
                         </TouchableOpacity>
@@ -59,7 +59,7 @@ export default function ItemAlignComponent({ items, collapsed, category, time })
 
                         <TouchableOpacity
                             className="rounded-full bg-sky-200 p-4 items-center w-32 ml-56 mt-4"
-                            onPress={() => addAction(navigation, category, time)}
+                            onPress={() => addAction(navigation, category, items, time)}
                         >
                             <Text className="text-sky-600">Add {category}</Text>
                         </TouchableOpacity>

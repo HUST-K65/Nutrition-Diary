@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
-import { Text, View, Image, TouchableOpacity, Modal, StyleSheet, TouchableWithoutFeedback } from 'react-native'
+import { Text, View, TouchableOpacity, Modal, StyleSheet, TouchableWithoutFeedback } from 'react-native'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import * as Icon from "react-native-feather";
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Feather from 'react-native-vector-icons/Feather';
 import MealConstants from './log/meal/MealConstants';
+import { useNavigation } from '@react-navigation/native';
 
 const activeTabStyles = {
     icon: {
@@ -15,10 +16,13 @@ const activeTabStyles = {
     touchableOpacityView: "pr-5 pl-5 pt-2 pb-2 rounded-full bg-orange-300"
 }
 
-export default function ControlBar({ indexComponentActive, setIndexComponentActive }) {
+export default function ControlBar({ indexComponentActive, setIndexComponentActive, datePick }) {
     let isDashboardActive = indexComponentActive === 0;
     let isLogActive = indexComponentActive === 1;
+    let isDiscoverActive = indexComponentActive === 3;
+    let isGoalsActive = indexComponentActive === 2;
     const [openModalPlus, setOpenModalPlus] = useState(false);
+    const navigation = useNavigation();
     return (
         <View className="absolute h-20 bottom-0 bg-transparent w-full 
         flex-row space-x-5 items-center justify-center"
@@ -64,13 +68,27 @@ export default function ControlBar({ indexComponentActive, setIndexComponentActi
                     borderBottomLeftRadius: 10
                 }}
             >
-                <TouchableOpacity className="items-center">
-                    <Icon.Target stroke="black" strokeWidth={2} width="36" height="36" />
-                    <Text>Goals</Text>
+                <TouchableOpacity
+                    className="items-center"
+                    onPress={() => {
+                        setIndexComponentActive(2)
+                    }}
+                >
+                    <View className={isGoalsActive ? activeTabStyles.touchableOpacityView : ""}>
+                        <Icon.Target stroke="black" strokeWidth={2} width="36" height="36" />
+                    </View>
+                    <Text className={isGoalsActive ? activeTabStyles.text : ""}>Goals</Text>
                 </TouchableOpacity>
-                <TouchableOpacity className="items-center">
-                    <Icon.Activity stroke="black" strokeWidth={2} width="36" height="36" />
-                    <Text>Discover</Text>
+                <TouchableOpacity
+                    onPress={() => {
+                        setIndexComponentActive(3);
+                    }}
+                    className="items-center"
+                >
+                    <View className={isDiscoverActive ? activeTabStyles.touchableOpacityView : ""}>
+                        <Icon.Activity stroke="black" strokeWidth={2} width="36" height="36" />
+                    </View>
+                    <Text className={isDiscoverActive ? activeTabStyles.text : ""}>Discover</Text>
                 </TouchableOpacity>
             </View>
 
@@ -95,7 +113,12 @@ export default function ControlBar({ indexComponentActive, setIndexComponentActi
                                     <View className="space-y-2">
                                         <Text className="text-xl font-bold text-orange-300">Health</Text>
                                         <View className="flex-row space-x-8 pl-5">
-                                            <TouchableOpacity className="items-center">
+                                            <TouchableOpacity
+                                                onPress={() => {
+                                                    setOpenModalPlus(false)
+                                                    navigation.navigate("PopupWeight", { datePick })
+                                                }}
+                                                className="items-center">
                                                 <View className="bg-sky-400 rounded-full p-3">
                                                     <FontAwesome5 name="weight" size={20} style={{ color: "#09508a" }} />
                                                 </View>
@@ -112,25 +135,49 @@ export default function ControlBar({ indexComponentActive, setIndexComponentActi
                                     <View className="space-y-2">
                                         <Text className="text-xl font-bold text-orange-300">Food & Exercises</Text>
                                         <View className="flex-row items-center space-x-6 pr-3 pl-3 ">
-                                            <TouchableOpacity className="items-center">
+                                            <TouchableOpacity
+                                                onPress={() => {
+                                                    setOpenModalPlus(false)
+                                                    navigation.navigate("AddFood", { timeToMeal: MealConstants.BREAKFAST });
+                                                }
+                                                }
+                                                className="items-center">
                                                 <View className="rounded-full bg-orange-400 p-3">
                                                     <Feather name="sunrise" size={22} style={{ color: "white" }} />
                                                 </View>
                                                 <Text className="text-white text-lg">{MealConstants.BREAKFAST}</Text>
                                             </TouchableOpacity>
-                                            <TouchableOpacity className="items-center">
+                                            <TouchableOpacity
+                                                onPress={() => {
+                                                    setOpenModalPlus(false)
+                                                    navigation.navigate("AddFood", { timeToMeal: MealConstants.LUNCH });
+                                                }
+                                                }
+                                                className="items-center">
                                                 <View className="rounded-full bg-orange-500 p-3">
                                                     <Feather name="sun" size={22} style={{ color: "white" }} />
                                                 </View>
                                                 <Text className="text-white text-lg">{MealConstants.LUNCH}</Text>
                                             </TouchableOpacity>
-                                            <TouchableOpacity className="items-center">
+                                            <TouchableOpacity
+                                                onPress={() => {
+                                                    setOpenModalPlus(false)
+                                                    navigation.navigate("AddFood", { timeToMeal: MealConstants.DINNER });
+                                                }
+                                                }
+                                                className="items-center">
                                                 <View className="rounded-full bg-purple-800 p-3">
                                                     <Feather name="moon" size={22} style={{ color: "white" }} />
                                                 </View>
                                                 <Text className="text-white text-lg">{MealConstants.DINNER}</Text>
                                             </TouchableOpacity>
-                                            <TouchableOpacity className="items-center">
+                                            <TouchableOpacity
+                                                onPress={() => {
+                                                    setOpenModalPlus(false)
+                                                    navigation.navigate("AddFood", { timeToMeal: MealConstants.SNACK });
+                                                }
+                                                }
+                                                className="items-center">
                                                 <View className="rounded-full bg-blue-500 p-3">
                                                     <Feather name="clock" size={22} style={{ color: "white" }} />
                                                 </View>
@@ -138,7 +185,13 @@ export default function ControlBar({ indexComponentActive, setIndexComponentActi
                                             </TouchableOpacity>
                                         </View>
                                         <View className="flex-row ml-4">
-                                            <TouchableOpacity className="items-center">
+                                            <TouchableOpacity
+                                                onPress={() => {
+                                                    setOpenModalPlus(false)
+                                                    navigation.navigate("AddExercise");
+                                                }
+                                                }
+                                                className="items-center">
                                                 <View className="rounded-full bg-green-500 p-3">
                                                     <FontAwesome5 name="running" size={22} style={{ color: "white" }} />
                                                 </View>
