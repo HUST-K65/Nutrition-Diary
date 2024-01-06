@@ -152,7 +152,7 @@ function bodyMyFoodsTemplate(indexActive, setIndexActive, navigation) {
                         let isDifferentLine = nextItem.name[0] !== firstLetter || index === categories.length - 1;
                         let isDifferentLetter = prevItem.name[0] !== firstLetter;
                         return (
-                            <View key={index} className={"p-2 space-y-4" + (isDifferentLine ? " border-b-2 border-gray-200" : "")}>
+                            <TouchableOpacity key={index} className={"p-2 space-y-4" + (isDifferentLine ? " border-b-2 border-gray-200" : "")}>
                                 {
                                     isDifferentLetter || index === 0 ?
                                         <Text className="text-xl ml-4">
@@ -169,7 +169,7 @@ function bodyMyFoodsTemplate(indexActive, setIndexActive, navigation) {
                                     </View>
                                     <Text className="text-lg text-gray-600">Th 2</Text>
                                 </View>
-                            </View>
+                            </TouchableOpacity>
                         )
                     })
                 }

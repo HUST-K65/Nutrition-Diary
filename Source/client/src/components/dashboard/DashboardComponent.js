@@ -8,7 +8,7 @@ const data = {
     labels: ["M", "Tu", "W", "Th", "F", "Sa", "Su"],
     datasets: [
         {
-            data: [12, 45, 28, 24, 30, 56, 78]
+            data: [18, 45, 38, 54, 30, 56, 150]
         }
     ]
 };
@@ -31,7 +31,7 @@ const data1 = [
     {
         name: "Protein",
         weight: 5,
-        color: "purple",
+        color: "indigo",
         legendFontColor: "#7F7F7F",
         legendFontSize: 15
     },
@@ -41,8 +41,12 @@ export default function DashboardComponent() {
     const navigation = useNavigation();
     const { width: screenWidth } = useWindowDimensions();
     let totalWeight = 0;
+    let totalCalories = 0;
     data1.map(item => {
         totalWeight += item.weight;
+    })
+    data.datasets[0].data.map(item => {
+        totalCalories += item
     })
     return (
         <ScrollView className="p-3 space-y-3 mb-20"
@@ -59,7 +63,6 @@ export default function DashboardComponent() {
                     data={data}
                     width={screenWidth - 40}
                     height={220}
-
                     yAxisSuffix=" cals"
                     chartConfig={{
                         backgroundColor: "#e26a00",
@@ -73,6 +76,10 @@ export default function DashboardComponent() {
                         },
                     }}
                 />
+                <View className="ml-12">
+                    <Text className="text-lg font-bold">{totalCalories} under budget prior today</Text>
+                </View>
+
             </View>
             <View className="rounded-xl bg-white p-2 space-y-4 mb-8">
                 <Text className="text-lg">Macronutrients</Text>
@@ -91,20 +98,17 @@ export default function DashboardComponent() {
 
                 <View className="flex-row items-center space-x-4 justify-center">
                     <Text>Average</Text>
-                    <View className="rounded-full bg-orange-200 p-2 pr-6 pl-6">
-                        <Text>{Math.ceil(data1[0].weight * 100 / totalWeight)}</Text>
+                    <View className="rounded-full bg-orange-300 p-2 pr-6 pl-6">
+                        <Text>{Math.ceil(data1[0].weight * 100 / totalWeight)}%</Text>
                     </View>
-                    <View className={"rounded-full bg-" + data1[0] + "-200 p-2 pr-6 pl-6"}>
-                        <Text>{Math.ceil(data1[1].weight * 100 / totalWeight)}</Text>
+                    <View className="rounded-full bg-cyan-200 p-2 pr-6 pl-6">
+                        <Text>{Math.ceil(data1[1].weight * 100 / totalWeight)}%</Text>
                     </View>
-                    <View className="rounded-full bg-orange-200 p-2 pr-6 pl-6">
-                        <Text>{Math.ceil(data1[2].weight * 100 / totalWeight)}</Text>
+                    <View className="rounded-full bg-indigo-300 p-2 pr-6 pl-6">
+                        <Text>{Math.ceil(data1[2].weight * 100 / totalWeight)}%</Text>
                     </View>
                 </View>
-                <TouchableOpacity><Text>clcc</Text></TouchableOpacity>
             </View>
-
         </ScrollView>
     )
-
 }

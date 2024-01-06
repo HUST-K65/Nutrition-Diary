@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react'
-import { Text, TextInput, TouchableOpacity, View, Image, ScrollView, Modal } from 'react-native'
+import { Text, TextInput, TouchableOpacity, View, Image, ScrollView, Alert } from 'react-native'
 import * as Icon from "react-native-feather";
 import { exercises } from '../../../../constants'
 import Animated, { FadeInLeft, FadeInRight } from 'react-native-reanimated';
@@ -50,6 +50,7 @@ function tabBarHeader(indexActive, setIndexActive, navigation) {
 function bodyMyExerciseTemplate(indexActive) {
     if (indexActive === 0) {
         const [filter, setFilter] = useState("");
+        const [allExercises, setAllExercises] = useState([]);
         return (
             <Animated.View
                 entering={FadeInLeft.duration(100)}
@@ -88,7 +89,7 @@ function bodyMyExerciseTemplate(indexActive) {
                             let isDifferentLetter = prevItem.name[0] !== firstLetter;
 
                             return (
-                                <View className={"p-2 m-3 space-y-2" + (isDifferentLine ? " border-b-2 border-gray-200" : "")} key={index}>
+                                <TouchableOpacity className={"p-2 m-3 space-y-2" + (isDifferentLine ? " border-b-2 border-gray-200" : "")} key={index}>
                                     {
                                         isDifferentLetter || index === 0 ?
                                             <Text>{item.name[0].toUpperCase()}</Text>
@@ -99,7 +100,7 @@ function bodyMyExerciseTemplate(indexActive) {
                                         <Image source={item.image} className="w-4 h-4" />
                                         <Text>{item.name}</Text>
                                     </View>
-                                </View>
+                                </TouchableOpacity>
                             )
                         })
                     }
@@ -110,9 +111,45 @@ function bodyMyExerciseTemplate(indexActive) {
     return null;
 }
 
+async function getAllExercises(allExercises, setAllExercises) {
+    await fetch("http://10.0.2.2:8000/api/nutrition_diary/v1/exercise", {
+        method: "get",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    }
+    ).then(async (response) => {
+        const res = await response.json();
+
+    })
+        .catch(function (error) {
+            Alert.alert(
+                'Error',
+                error.message,
+                [
+                    {
+                        text: 'Cancel',
+                        style: 'cancel',
+                    },
+                ],
+                {
+                    cancelable: true,
+                },
+            );
+
+        });
+}
+
 function bodyAllExerciseTemplate(indexActive, setIndexActive) {
     if (indexActive === 1) {
+
         const [filter, setFilter] = useState("");
+        const [allExercises, setAllExercises] = useState([]);
+
+        if (!window.allExercises || window.allExercises.length === 0) {
+            window.allExercises = [];
+            getAllExercises(allExercises, setAllExercises)
+        }
 
         return (
             <Animated.View
