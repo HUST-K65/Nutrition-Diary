@@ -65,3 +65,8 @@ Source/client/package-lock.json
 
 # testing
 /coverage
+
+.expo/
+Source/client/.expo/
+Source/client/%ProgramData%/
+package-lock.json

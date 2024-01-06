@@ -33,45 +33,23 @@ async function postData() {
 
 
 async function handleSubmit() {
-    console.log("hanle")
-    // await axios.get(
-    //     'http://localhost:8000/api/nutrition_diary/v1/auth/login',
-    //     {
-    //         phone: '0585713887',
-    //         password: 'test'
-    //     },
-    //     {
-    //         headers: {
-    //             'Content-Type': 'application/json; charset=utf-8',
-    //             'Access-Control-Allow-Origin': '*'
-    //         }
-    //     })
-    //     .then(function (response) {
-    //         console.log(response);
-    //     })
-    //     .catch(function (error) {
-    //         console.log("nguu")
-    //         console.log(error);
-    //     });
-    let data = await fetch("http://localhost:8000/api/nutrition_diary/v1/auth/login", {
+    let data = await fetch("http://10.0.2.2:8000/api/nutrition_diary/v1/auth/login", {
         method: "post",
         headers: {
             "Content-Type": "application/json"
         },
-        body: {
-            "phone": "0585713887",
-            "password": "test"
-        }
+        body: JSON.stringify({
+            "phone": "0969250818",
+            "password": "matkhau123?"
+        })
     }
-    ).then(function (response) {
-        console.log("data sucesss", JSON.stringify(response));
+    ).then(async(response)=>{
+        const res = await response.json();
+        console.log("data sucesss", res.data);
     })
         .catch(function (error) {
-            console.log("nguu")
-            console.log(error);
+            console.log(error.message);
         });
-
-    console.log("sadasdasd");
 }
 
 
@@ -175,7 +153,7 @@ export default function LoginScreen() {
 
                         <TouchableOpacity
                             className="w-full bg-sky-400 p-3 rounded-2xl mb-3"
-                            onPress={() => navigation.navigate("Homepage")}
+                            onPress={() => handleSubmit()}
                         >
                             <Text className="text-xl font-bold text-white text-center">Login</Text>
                         </TouchableOpacity>
