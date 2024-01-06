@@ -4,8 +4,75 @@ import { StatusBar } from 'expo-status-bar'
 import { useNavigation } from '@react-navigation/native'
 import { useState, useEffect } from 'react'
 import Animated, { FadeIn, FadeInDown, FadeInUp } from 'react-native-reanimated';
-import axios from 'axios';
-import test from '../data/api/test'
+import axios from 'axios'
+
+
+async function postData() {
+    try {
+        const response = await fetch("http://localhost:8000/api/nutrition_diary/v1/auth/login", {
+            method: "post",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                "phone": "0585713887",
+                "password": "rest"
+            })
+        });
+        console.log("response:", response)
+        if (response.ok) {
+            const data = await response.json();
+            console.log("data success:", data);
+        } else {
+            console.log("Request failed with status:", response.url);
+        }
+    } catch (error) {
+        console.error("An error occurred:", error);
+    }
+}
+
+
+async function handleSubmit() {
+    console.log("hanle")
+    // await axios.get(
+    //     'http://localhost:8000/api/nutrition_diary/v1/auth/login',
+    //     {
+    //         phone: '0585713887',
+    //         password: 'test'
+    //     },
+    //     {
+    //         headers: {
+    //             'Content-Type': 'application/json; charset=utf-8',
+    //             'Access-Control-Allow-Origin': '*'
+    //         }
+    //     })
+    //     .then(function (response) {
+    //         console.log(response);
+    //     })
+    //     .catch(function (error) {
+    //         console.log("nguu")
+    //         console.log(error);
+    //     });
+    let data = await fetch("http://localhost:8000/api/nutrition_diary/v1/auth/login", {
+        method: "post",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: {
+            "phone": "0585713887",
+            "password": "test"
+        }
+    }
+    ).then(function (response) {
+        console.log("data sucesss", JSON.stringify(response));
+    })
+        .catch(function (error) {
+            console.log("nguu")
+            console.log(error);
+        });
+
+    console.log("sadasdasd");
+}
 
 
 export default function LoginScreen() {
@@ -15,14 +82,14 @@ export default function LoginScreen() {
     let [response, setResponse] = useState('');
 
 
-    axios({
-        method: 'get',
-        url: `https://jsonplaceholder.typicode.com/users`,
-    }).then((response) => {
-        let city = response.data[0]['address'].city;
-        setResponse(city);
+    // axios({
+    //     method: 'get',
+    //     url: `https://jsonplaceholder.typicode.com/users`,
+    // }).then((response) => {
+    //     let city = response.data[0]['address'].city;
+    //     setResponse(city);
 
-    });
+    // });
 
 
     // axios.get(`https://jsonplaceholder.typicode.com/users`)
@@ -108,7 +175,7 @@ export default function LoginScreen() {
 
                         <TouchableOpacity
                             className="w-full bg-sky-400 p-3 rounded-2xl mb-3"
-                            onPress={() => navigation.push('Homepage')}
+                            onPress={() => navigation.navigate("Homepage")}
                         >
                             <Text className="text-xl font-bold text-white text-center">Login</Text>
                         </TouchableOpacity>

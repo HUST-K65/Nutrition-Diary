@@ -20,7 +20,6 @@ const components = [
 export default function HomePage() {
     const [indexComponentActive, setIndexComponentActive] = useState(0);
     const [datePick, setDatePick] = useState(null);
-    console.log("index", indexComponentActive)
 
     return (
         <SafeAreaView className="bg-gray-300 h-full mb-4" >
