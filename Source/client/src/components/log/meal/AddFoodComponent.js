@@ -1,4 +1,5 @@
 import { useNavigation, useRoute } from "@react-navigation/native";
+import {API_URL} from "@env"
 import React, { useEffect, useState } from "react";
 import {
   Text,
@@ -158,7 +159,14 @@ function bodyMyFoodsTemplate(indexActive, setIndexActive, navigation) {
   const [foods, setFoods] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
-      await fetch("http://10.0.2.2:8000/api/nutrition_diary/v1/food")
+      await fetch(`${API_URL}/food`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${window.viewer.token}`,
+          'Content-Type': 'application/json',
+          // You can include other headers if required
+        },
+      })
         .then(async (response) => {
           const res = await response.json();
           setFoods(res.data);
