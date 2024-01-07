@@ -159,16 +159,16 @@ function bodyMyFoodsTemplate(indexActive, setIndexActive, navigation) {
   const [foods, setFoods] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
-      await fetch(`${API_URL}/food`, {
+      await fetch(`${API_URL}/food?userId=${window.viewer.id}`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${window.viewer.token}`,
           'Content-Type': 'application/json',
-          // You can include other headers if required
         },
       })
         .then(async (response) => {
           const res = await response.json();
+          console.log(res)
           setFoods(res.data);
         })
         .catch(function (error) {

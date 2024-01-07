@@ -1,6 +1,8 @@
 import { useNavigation } from "@react-navigation/native";
+import { API_URL } from "@env";
 import React, { useEffect, useRef, useState, memo, useMemo } from "react";
 import {
+  Alert,
   ScrollView,
   Text,
   TextInput,
@@ -85,6 +87,48 @@ export default function CreateFoodComponent() {
     });
   }, [fakeServing]);
 
+  const handleSubmit = async () => {
+    const viewer = window.viewer;
+    const user_id = viewer.id;
+
+    await fetch(`${API_URL}/food`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${viewer.token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        "userId": user_id,
+        "name":name,
+        "brand": brand,
+        "calories": calories
+      }),
+    })
+      .then(async (response) => {
+        const res = await response.json();
+        if(!res.data){
+          throw new Error(res.message || "DB Error")
+        }
+        
+        navigation.navigate("Homepage");
+      })
+      .catch((error) => {
+        Alert.alert(
+          "Error",
+          error.message,
+          [
+            {
+              text: "Cancel",
+              style: "cancel",
+            },
+          ],
+          {
+            cancelable: true,
+          }
+        );
+      });
+  };
+
   return (
     <View>
       <View className="absolute flex-row flex-1 h-20 w-full bg-orange-500 items-center justify-between p-3 space-x-8">
@@ -92,7 +136,7 @@ export default function CreateFoodComponent() {
           <Icon.ArrowLeft stroke="white" strokeWidth={3} />
         </TouchableOpacity>
         <Text className="text-white text-2xl">Create New Food</Text>
-        <TouchableOpacity onPress={()=> handleSubmit()}>
+        <TouchableOpacity onPress={() => handleSubmit()}>
           <Text className="text-white text-sm">Save</Text>
         </TouchableOpacity>
       </View>

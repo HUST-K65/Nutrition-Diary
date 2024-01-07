@@ -24,10 +24,8 @@ async function handleSubmit(username, password, navigation = null, isLoading, se
             throw new Error("Unauthorize")
         }
 
-        const {user, token} = res.data;
-
         window.users.push(res.data.user);
-        window.viewer = res.data;
+        window.viewer = {...res.data.user, token: res.data.token};
         navigation.navigate("Homepage");
     })
         .catch(function (error) {
