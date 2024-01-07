@@ -110,7 +110,7 @@ export default function CreateFoodComponent() {
           throw new Error(res.message || "DB Error")
         }
         
-        navigation.navigate("Homepage");
+        navigation.navigate("AddFood");
       })
       .catch((error) => {
         Alert.alert(

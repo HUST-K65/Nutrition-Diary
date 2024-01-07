@@ -1,6 +1,10 @@
-import { useNavigation, useRoute } from "@react-navigation/native";
-import {API_URL} from "@env"
-import React, { useEffect, useState } from "react";
+import {
+  useNavigation,
+  useRoute,
+  useFocusEffect,
+} from "@react-navigation/native";
+import { API_URL } from "@env";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   Text,
   TouchableOpacity,
@@ -18,6 +22,7 @@ import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import MealConstants from "./MealConstants";
 import { fakeMealsLog, fakeRecipes } from "../../../../constants";
 import Animated, { FadeInLeft, FadeInRight } from "react-native-reanimated";
+import {formatDate} from '../../../../utils/date'
 
 function tabBarHeader(indexActive, setIndexActive, navigation = null) {
   const textColorActive = "text-orange-700";
@@ -157,27 +162,39 @@ function bodySearchTemplate(indexActive, navigation) {
 
 function bodyMyFoodsTemplate(indexActive, setIndexActive, navigation) {
   const [foods, setFoods] = useState([]);
-  useEffect(() => {
-    const fetchData = async () => {
-      await fetch(`${API_URL}/food?userId=${window.viewer.id}`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${window.viewer.token}`,
-          'Content-Type': 'application/json',
-        },
-      })
-        .then(async (response) => {
-          const res = await response.json();
-          console.log(res)
-          setFoods(res.data);
-        })
-        .catch(function (error) {
-          console.log(error.message);
-        });
-    };
 
+  const fetchData = async () => {
+    await fetch(`${API_URL}/food?userId=${window.viewer.id}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${window.viewer.token}`,
+        "Content-Type": "application/json",
+      },
+    })
+      .then(async (response) => {
+        const res = await response.json();
+        setFoods(res.data);
+      })
+      .catch(function (error) {
+        Alert.alert(
+          'Error',
+          error.message,
+          [
+            {
+                text: 'Cancel',
+                style: 'cancel',
+            },
+        ],
+        {
+            cancelable: true,
+        },
+        )
+      });
+  };
+
+  useFocusEffect(useCallback(()=>{
     fetchData();
-  }, []);
+  }, []));
 
   if (indexActive === 1) {
     return (
@@ -186,28 +203,40 @@ function bodyMyFoodsTemplate(indexActive, setIndexActive, navigation) {
         className="space-y-8 mb-20"
         showsVerticalScrollIndicator={false}
       >
-        {foods && foods.map((item, index) => {
-          return (
-            <View
-              key={index}
-              className={
-                "p-2 space-y-4" +
-                (1 ? " border-b-2 border-gray-200" : "")
-              }
-            >
-              <View className="flex-row items-center justify-between pl-2">
-                <View className="flex-row space-x-6">
-                  <Image source={item.image} className="w-12 h-12" />
-                  <View>
-                    <Text className="text-lg">{item.name}</Text>
-                    <Text className="text-sm text-gray-600">2.222 cals</Text>
+        {foods &&
+          foods.map((item, index) => {
+            let firstLetter = item.name[0];
+            let nextItem =
+              index < foods.length - 1
+                ? foods[index + 1]
+                : foods[index - 1];
+            let prevItem = index > 0 ? foods[index - 1] : foods[0];
+            let isDifferentLine = nextItem.name[0] !== firstLetter;
+            let isDifferentLetter = prevItem.name[0] !== firstLetter;
+
+            return (
+              <View
+                key={index}
+                className={
+                  "p-2 space-y-4" + (isDifferentLine ? " border-b-2 border-gray-200" : "")
+                }
+              >
+                {isDifferentLetter || index === 0 ? (
+                  <Text className="text-xl ml-4">{firstLetter}</Text>
+                ) : null}
+                <View className="flex-row items-center justify-between pl-2">
+                  <View className="flex-row space-x-6">
+                    <Image source={item.image} className="w-12 h-12" />
+                    <View>
+                      <Text className="text-lg">{item.name}</Text>
+                      <Text className="text-sm text-gray-600">{item.calories} cals</Text>
+                    </View>
                   </View>
+                  <Text className="text-lg text-gray-600">{formatDate(item.createdAt)}</Text>
                 </View>
-                <Text className="text-lg text-gray-600">Th 2</Text>
               </View>
-            </View>
-          );
-        })}
+            );
+          })}
         <View className="space-y-8">
           <View className="p-3">
             <Text className="text-lg">Log New Food</Text>
