@@ -124,13 +124,7 @@ export default function ControlBar({ indexComponentActive, setIndexComponentActi
                                                 </View>
                                                 <Text className="text-lg text-white">Weight</Text>
                                             </TouchableOpacity>
-                                            <TouchableOpacity
-                                                className="items-center"
-                                                onPress={() => {
-                                                    setOpenModalPlus(false);
-                                                    navigation.navigate("NewGoal", { isNew: true, setIndexComponentActive: setIndexComponentActive })
-                                                }}
-                                            >
+                                            <TouchableOpacity className="items-center">
                                                 <View className="bg-sky-400 rounded-full p-2">
                                                     <AntDesign name="plus" size={30} style={{ color: "#09508a" }} />
                                                 </View>
