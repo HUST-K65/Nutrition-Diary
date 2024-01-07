@@ -19,7 +19,7 @@ export default function NavigationRouteContainer({ Stack }) {
     return (
         <NavigationContainer>
             <Stack.Navigator
-                initialRouteName='Homepage'
+                initialRouteName='Login'
                 screenOptions={{ headerShown: false }}
             >
                 <Stack.Screen name="Login" component={LoginScreen} />
