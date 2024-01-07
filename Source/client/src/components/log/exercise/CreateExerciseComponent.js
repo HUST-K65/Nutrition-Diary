@@ -29,6 +29,7 @@ async function handleSubmitCreate(exerciseName, iconUrl, time, calories, navigat
         await fetch("http://10.0.2.2:8000/api/nutrition_diary/v1/exercise", {
             method: "post",
             headers: {
+                "Authorization": `Bearer ${window.viewer.token}`,
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({

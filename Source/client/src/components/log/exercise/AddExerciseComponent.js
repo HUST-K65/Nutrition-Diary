@@ -115,6 +115,7 @@ async function getAllExercises(allExercises, setAllExercises) {
     await fetch("http://10.0.2.2:8000/api/nutrition_diary/v1/exercise", {
         method: "get",
         headers: {
+            //"Authorization": `Bearer ${window.viewer.token}`,
             "Content-Type": "application/json"
         }
     }

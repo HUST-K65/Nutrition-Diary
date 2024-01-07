@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Text, TouchableOpacity, View } from 'react-native'
 import * as Icon from "react-native-feather";
-import ItemAlignComponent from '../../ItemAlignComponent';
+import ItemAlignComponentForMeal from '../../ItemAlignComponentForMeal';
 import { categories } from '../../../../../constants'
 import MealConstants from '../MealConstants';
 
@@ -26,7 +26,7 @@ export default function MealSnackLogComponent() {
                     <Text className="text-gray-700 text-sm">732 calories logged</Text>
                 </View>
             </View>
-            <ItemAlignComponent items={categories} collapsed={collapsed} category={MealConstants.CATEGORY} time={MealConstants.SNACK} />
+            <ItemAlignComponentForMeal items={categories} collapsed={collapsed} category={MealConstants.CATEGORY} time={MealConstants.SNACK} />
         </View>
     )
 }

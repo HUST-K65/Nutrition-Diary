@@ -25,6 +25,7 @@ async function handleSubmit(username, password, navigation = null, isLoading, se
         }
 
         window.users.push(res.data.user);
+
         window.viewer = { ...res.data.user, token: res.data.token };
         navigation.navigate("Homepage");
     })
