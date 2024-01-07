@@ -48,7 +48,7 @@ function tabBarHeader(indexActive, setIndexActive, navigation) {
     )
 }
 
-function bodyMyExerciseTemplate(indexActive) {
+function bodyMyExerciseTemplate(indexActive, myExercises) {
     if (indexActive === 0) {
         const [filter, setFilter] = useState("");
         return (
@@ -81,34 +81,71 @@ function bodyMyExerciseTemplate(indexActive) {
                     showsVerticalScrollIndicator={false}
                 >
                     {
-                        exercises.filter(item => item.name.toLowerCase().includes(filter)).map((item, index) => {
-                            let firstLetter = item.name[0];
-                            let nextItem = exercises[index + 1] ?? null;
-                            let prevItem = exercises[index > 0 ? index - 1 : 0];
-                            let isDifferentLine = nextItem ? nextItem.name[0] !== firstLetter : false;
-                            let isDifferentLetter = prevItem.name[0] !== firstLetter;
+                        myExercises && myExercises.length ? myExercises.filter(item => item.exercise.name.toLowerCase().includes(filter)).map((item, index) => {
+                            let imageSource = item.exercise.image ? item.exercise.image : "https://cdn-icons-png.flaticon.com/512/5783/5783140.png";
+                            let firstLetter = item.exercise.name[0];
+                            let nextItem = myExercises[index + 1] ?? null;
+                            let prevItem = myExercises[index > 0 ? index - 1 : 0];
+                            let isDifferentLine = nextItem ? nextItem.exercise.name[0] !== firstLetter : false;
+                            let isDifferentLetter = prevItem.exercise.name[0] !== firstLetter;
 
                             return (
                                 <TouchableOpacity className={"p-2 m-3 space-y-2" + (isDifferentLine ? " border-b-2 border-gray-200" : "")} key={index}>
                                     {
                                         isDifferentLetter || index === 0 ?
-                                            <Text>{item.name[0].toUpperCase()}</Text>
+                                            <Text>{item.exercise.name[0].toUpperCase()}</Text>
                                             : null
                                     }
 
                                     <View className="flex-row items-center space-x-4">
-                                        <Image source={item.image} className="w-4 h-4" />
-                                        <Text>{item.name}</Text>
+                                        <Image source={{ uri: imageSource }} className="w-10 h-10" />
+                                        <Text>{item.exercise.name}</Text>
                                     </View>
                                 </TouchableOpacity>
                             )
-                        })
+                        }) : null
                     }
                 </ScrollView>
             </Animated.View>
         )
     }
     return null;
+}
+
+async function getMyExercises(myExercises, setMyExercises) {
+    await fetch("http://10.0.2.2:8000/api/nutrition_diary/v1/exercise/getUserExercises", {
+        method: "post",
+        headers: {
+            //"Authorization": `Bearer ${window.viewer.token}`,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            "userId": "659a676eaf291d973da3758b",
+            "date": 1704585600000
+        })
+    }
+    ).then(async (response) => {
+        const res = await response.json();
+        if (res && res.data && res.data.length) {
+            setMyExercises(res.data);
+        }
+    })
+        .catch(function (error) {
+            Alert.alert(
+                'Error',
+                error.message,
+                [
+                    {
+                        text: 'Cancel',
+                        style: 'cancel',
+                    },
+                ],
+                {
+                    cancelable: true,
+                },
+            );
+
+        });
 }
 
 async function getAllExercises(allExercises, setAllExercises) {
@@ -143,7 +180,7 @@ async function getAllExercises(allExercises, setAllExercises) {
         });
 }
 
-function bodyAllExerciseTemplate(indexActive, setIndexActive, allExercises, setAllExercises, navigation) {
+function bodyAllExerciseTemplate(indexActive, allExercises, navigation) {
     if (indexActive === 1) {
 
         const [filter, setFilter] = useState("");
@@ -205,17 +242,19 @@ export default function AddExerciseComponent() {
     const navigation = useNavigation();
     const [indexActive, setIndexActive] = useState(0);
     const [allExercises, setAllExercises] = useState(null);
+    const [myExercises, setMyExercises] = useState(null);
     const isFocused = useIsFocused();
 
     useEffect(() => {
+        getMyExercises(myExercises, setMyExercises)
         getAllExercises(allExercises, setAllExercises)
     }, [isFocused])
 
     return (
         <View>
             {tabBarHeader(indexActive, setIndexActive, navigation)}
-            {bodyMyExerciseTemplate(indexActive)}
-            {bodyAllExerciseTemplate(indexActive, setIndexActive, allExercises, setAllExercises, navigation)}
+            {bodyMyExerciseTemplate(indexActive, myExercises)}
+            {bodyAllExerciseTemplate(indexActive, allExercises, navigation)}
         </View>
     )
 }

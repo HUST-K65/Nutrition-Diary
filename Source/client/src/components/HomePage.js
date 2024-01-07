@@ -10,17 +10,16 @@ import TabDiscoverGoalComponent from './tabTopBar/TabDiscoverGoalComponent';
 import GoalsComponent from './goals/GoalsComponent';
 import DashboardComponent from './dashboard/DashboardComponent';
 
-const components = [
-    <DashboardComponent />,// indexComponentActive = 0
-    <LogComponent />,   // indexComponentActive = 1,
-    <GoalsComponent />, // indexComponentActive = 2,
-    <DiscoverComponent />, // indexComponentActive = 3
-];
 
 export default function HomePage() {
     const [indexComponentActive, setIndexComponentActive] = useState(0);
     const [datePick, setDatePick] = useState(null);
-
+    const components = [
+        <DashboardComponent />,// indexComponentActive = 0
+        <LogComponent />,   // indexComponentActive = 1,
+        <GoalsComponent setIndexComponentActive={setIndexComponentActive} />, // indexComponentActive = 2,
+        <DiscoverComponent />, // indexComponentActive = 3
+    ];
     return (
         <SafeAreaView className="bg-gray-300 h-full mb-4" >
             <StatusBar
