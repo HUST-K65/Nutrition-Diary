@@ -20,30 +20,20 @@ async function handleSubmit(username, password, navigation = null, isLoading, se
     ).then(async (response) => {
         const res = await response.json();
         setIsLoading(false);
-        if (res && res.data && res.data.user) {
-            window.users.push(res.data.user)
-            navigation.navigate("Homepage");
-        } else {
-            Alert.alert(
-                'Error',
-                res.message,
-                [
-                    {
-                        text: 'Cancel',
-                        style: 'cancel',
-                    },
-                ],
-                {
-                    cancelable: true,
-                },
-            );
+        if(!res || !res.data || !res.data.user){
+            throw new Error("Unauthorize")
         }
+
+        window.users.push(res.data.user);
+        window.viewer = {...res.data.user, token: res.data.token};
+        navigation.navigate("Homepage");
     })
         .catch(function (error) {
             setIsLoading(false);
+            console.log(error.message)
             Alert.alert(
                 'Error',
-                error,
+                error.message,
                 [
                     {
                         text: 'Cancel',
@@ -61,6 +51,7 @@ async function handleSubmit(username, password, navigation = null, isLoading, se
 export default function LoginScreen() {
     const navigation = useNavigation();
     window.users = [];
+    window.viewer = null;
     let [username, setUsername] = useState("");
     let [password, setPassword] = useState("");
     let [isLoading, setIsLoading] = useState(false);
