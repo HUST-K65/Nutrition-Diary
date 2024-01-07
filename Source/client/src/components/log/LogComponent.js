@@ -32,7 +32,8 @@ export default function LogComponent() {
                     <Text className={classTextUnder}>2.200</Text>
                 </View>
             </View>
-            {/* meal component */}
+
+            <Text className="text-2xl m-4">Meal</Text>
             <MealLogComponent />
 
             <Text className="text-2xl m-4">Exercise</Text>

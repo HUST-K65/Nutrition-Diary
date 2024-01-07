@@ -68,5 +68,6 @@ Source/client/package-lock.json
 
 .expo/
 Source/client/.expo/
+Source/client/.env
 Source/client/%ProgramData%/
 package-lock.json
