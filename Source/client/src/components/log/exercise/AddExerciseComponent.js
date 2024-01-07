@@ -1,9 +1,10 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Text, TextInput, TouchableOpacity, View, Image, ScrollView, Alert } from 'react-native'
 import * as Icon from "react-native-feather";
 import { exercises } from '../../../../constants'
 import Animated, { FadeInLeft, FadeInRight } from 'react-native-reanimated';
+import { useIsFocused } from "@react-navigation/native";
 
 function tabBarHeader(indexActive, setIndexActive, navigation) {
     const textColorActive = "text-orange-700";
@@ -50,7 +51,6 @@ function tabBarHeader(indexActive, setIndexActive, navigation) {
 function bodyMyExerciseTemplate(indexActive) {
     if (indexActive === 0) {
         const [filter, setFilter] = useState("");
-        const [allExercises, setAllExercises] = useState([]);
         return (
             <Animated.View
                 entering={FadeInLeft.duration(100)}
@@ -120,7 +120,9 @@ async function getAllExercises(allExercises, setAllExercises) {
     }
     ).then(async (response) => {
         const res = await response.json();
-
+        if (res && res.data && res.data.length) {
+            setAllExercises(res.data);
+        }
     })
         .catch(function (error) {
             Alert.alert(
@@ -140,16 +142,10 @@ async function getAllExercises(allExercises, setAllExercises) {
         });
 }
 
-function bodyAllExerciseTemplate(indexActive, setIndexActive) {
+function bodyAllExerciseTemplate(indexActive, setIndexActive, allExercises, setAllExercises, navigation) {
     if (indexActive === 1) {
 
         const [filter, setFilter] = useState("");
-        const [allExercises, setAllExercises] = useState([]);
-
-        if (!window.allExercises || window.allExercises.length === 0) {
-            window.allExercises = [];
-            getAllExercises(allExercises, setAllExercises)
-        }
 
         return (
             <Animated.View
@@ -181,17 +177,21 @@ function bodyAllExerciseTemplate(indexActive, setIndexActive) {
                     showsVerticalScrollIndicator={false}
                 >
                     {
-                        exercises.filter(item => item.name.toLowerCase().includes(filter)).map((item, index) => {
-                            return (
-                                <View className="p-2 m-3 space-y-2" key={index}>
+                        allExercises && allExercises.length ?
+                            allExercises.filter(item => item.name.toLowerCase().includes(filter ? filter.toLowerCase() : filter)).map((item, index) => {
+                                let imageSource = item.image ? item.image : "https://cdn-icons-png.flaticon.com/512/5783/5783140.png";
+                                return (
+                                    <TouchableOpacity className="p-2 m-3 space-y-2" key={index}
+                                        onPress={() => navigation.navigate("TimeToExercise", { item })}
+                                    >
 
-                                    <View className="flex-row items-center space-x-4">
-                                        <Image source={item.image} className="w-4 h-4" />
-                                        <Text>{item.name}</Text>
-                                    </View>
-                                </View>
-                            )
-                        })
+                                        <View className="flex-row items-center space-x-4">
+                                            <Image source={{ uri: imageSource }} className="w-10 h-10" />
+                                            <Text>{item.name}</Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                )
+                            }) : null
                     }
                 </ScrollView>
             </Animated.View>
@@ -203,12 +203,18 @@ function bodyAllExerciseTemplate(indexActive, setIndexActive) {
 export default function AddExerciseComponent() {
     const navigation = useNavigation();
     const [indexActive, setIndexActive] = useState(0);
+    const [allExercises, setAllExercises] = useState(null);
+    const isFocused = useIsFocused();
+
+    useEffect(() => {
+        getAllExercises(allExercises, setAllExercises)
+    }, [isFocused])
 
     return (
         <View>
             {tabBarHeader(indexActive, setIndexActive, navigation)}
             {bodyMyExerciseTemplate(indexActive)}
-            {bodyAllExerciseTemplate(indexActive, setIndexActive)}
+            {bodyAllExerciseTemplate(indexActive, setIndexActive, allExercises, setAllExercises, navigation)}
         </View>
     )
 }

@@ -13,6 +13,7 @@ import CreateCaloriesComponent from '../src/components/log/meal/actionCreate/Cre
 import IconPopupComponent from '../src/components/log/meal/actionCreate/icon/IconPopupComponent';
 import CalculationServingComponent from '../src/components/log/meal/CalculationServingComponent';
 import PopUpWeightComponent from '../src/components/PopUpWeightComponent';
+import TimeToExercise from '../src/components/log/exercise/TimeToExercise';
 
 export default function NavigationRouteContainer({ Stack }) {
     return (
@@ -28,6 +29,7 @@ export default function NavigationRouteContainer({ Stack }) {
                 <Stack.Screen name="AddFood" component={AddFoodComponent} />
                 <Stack.Screen name="MealSummary" component={MealSummaryComponent} />
                 <Stack.Screen name="AddExercise" component={AddExerciseComponent} options={{ headerShown: false }} />
+                <Stack.Screen name="TimeToExercise" component={TimeToExercise} options={{ presentation: 'modal' }} />
 
                 <Stack.Screen name="CreateExercise" component={CreateExerciseComponent} options={{ presentation: 'modal' }} />
                 <Stack.Screen name="CreateFood" component={CreateFoodComponent} options={{ presentation: 'modal' }} />

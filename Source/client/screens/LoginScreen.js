@@ -20,12 +20,12 @@ async function handleSubmit(username, password, navigation = null, isLoading, se
     ).then(async (response) => {
         const res = await response.json();
         setIsLoading(false);
-        if(!res || !res.data || !res.data.user){
+        if (!res || !res.data || !res.data.user) {
             throw new Error("Unauthorize")
         }
 
         window.users.push(res.data.user);
-        window.viewer = {...res.data.user, token: res.data.token};
+        window.viewer = { ...res.data.user, token: res.data.token };
         navigation.navigate("Homepage");
     })
         .catch(function (error) {

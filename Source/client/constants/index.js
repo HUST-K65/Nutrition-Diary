@@ -42,6 +42,34 @@ export const categories = [
 
 ]
 
+export const iconsExercise = [
+    {
+        id: 1,
+        name: "nâng tạ",
+        image: 'https://i.pinimg.com/736x/57/f9/0f/57f90fb40b3b1872e45f42cb053f2a96.jpg',
+    },
+    {
+        id: 2,
+        name: "ép chân",
+        image: 'https://i.pinimg.com/564x/c1/43/e7/c143e706a2c5ef666cc23cebb7d5ce39.jpg',
+    },
+    {
+        id: 3,
+        name: "gập bụng",
+        image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQvgKFTPDfTSDHXf_uuj_JTuykWH1Mo4lIHg&usqp=CAU',
+    },
+    {
+        id: 4,
+        name: "chạy",
+        image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ0oAgruhdC_8kUdNlILIGtodM0q9FPSun0wg&usqp=CAU',
+    },
+    {
+        id: 5,
+        name: "nâng cao đùi",
+        image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSOEVavh52mkxIzZshp5_v0HaWmqIQyeoLCYOcL55tU8O5Il5G4Z_243fwim922mfQE4Q8&usqp=CAU'
+    }
+]
+
 export const exercises = [
     {
         id: 1,
