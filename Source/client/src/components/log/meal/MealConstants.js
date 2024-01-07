@@ -1,7 +1,7 @@
 export default {
     CATEGORY: 'Food',
-    BREAKFAST: 'Breakfast',
-    LUNCH: 'Lunch',
-    DINNER: 'Dinner',
+    BREAKFAST: 'breakfast',
+    LUNCH: 'lunch',
+    DINNER: 'dinner',
     SNACK: 'Snack'
 }

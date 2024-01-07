@@ -6,6 +6,7 @@ import {
 import { API_URL } from "@env";
 import React, { useEffect, useState, useCallback } from "react";
 import {
+  Alert,
   Text,
   TouchableOpacity,
   View,
@@ -22,7 +23,7 @@ import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import MealConstants from "./MealConstants";
 import { fakeMealsLog, fakeRecipes } from "../../../../constants";
 import Animated, { FadeInLeft, FadeInRight } from "react-native-reanimated";
-import {formatDate} from '../../../../utils/date'
+import { formatDate } from "../../../../utils/date";
 
 function tabBarHeader(indexActive, setIndexActive, navigation = null) {
   const textColorActive = "text-orange-700";
@@ -160,16 +161,25 @@ function bodySearchTemplate(indexActive, navigation) {
   }
 }
 
-function bodyMyFoodsTemplate(indexActive, setIndexActive, navigation) {
+function bodyMyFoodsTemplate(
+  indexActive,
+  timeToMeal,
+  setIndexActive,
+  navigation
+) {
   const [foods, setFoods] = useState([]);
+  const [meal, setMeal] = useState(timeToMeal);
 
   const fetchData = async () => {
-    await fetch(`${API_URL}/food?userId=${window.viewer.id}`, {
-      method: "GET",
+    await fetch(`${API_URL}/food/getFood`, {
+      method: "POST",
       headers: {
         Authorization: `Bearer ${window.viewer.token}`,
         "Content-Type": "application/json",
       },
+      body: JSON.stringify({
+        userId: window.viewer.id,
+      }),
     })
       .then(async (response) => {
         const res = await response.json();
@@ -177,24 +187,79 @@ function bodyMyFoodsTemplate(indexActive, setIndexActive, navigation) {
       })
       .catch(function (error) {
         Alert.alert(
-          'Error',
+          "Error",
           error.message,
           [
             {
-                text: 'Cancel',
-                style: 'cancel',
+              text: "Cancel",
+              style: "cancel",
             },
-        ],
-        {
+          ],
+          {
             cancelable: true,
-        },
-        )
+          }
+        );
       });
   };
 
-  useFocusEffect(useCallback(()=>{
-    fetchData();
-  }, []));
+  useFocusEffect(
+    useCallback(() => {
+      fetchData();
+    }, [])
+  );
+
+  const handleCreateLog = async (food) => {
+    const viewer = window.viewer;
+    const user_id = viewer.id;
+
+    await fetch(`${API_URL}/mealDiary`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${viewer.token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId: user_id,
+        foodId: food._id,
+        diaryType: meal,
+      }),
+    })
+      .then(async (response) => {
+        const res = await response.json();
+        if(!res.data){
+          throw new Error(res.message)
+        }
+        
+        Alert.alert(
+          "Add food to meal success",
+          `Successfully add ${food.name} to ${meal}`,
+          [
+            {
+              text: "Cancel",
+              style: "cancel",
+            },
+          ],
+          {
+            cancelable: true,
+          }
+        );
+      })
+      .catch(function (error) {
+        Alert.alert(
+          "Error",
+          error.message,
+          [
+            {
+              text: "Cancel",
+              style: "cancel",
+            },
+          ],
+          {
+            cancelable: true,
+          }
+        );
+      });
+  };
 
   if (indexActive === 1) {
     return (
@@ -207,34 +272,39 @@ function bodyMyFoodsTemplate(indexActive, setIndexActive, navigation) {
           foods.map((item, index) => {
             let firstLetter = item.name[0];
             let nextItem =
-              index < foods.length - 1
-                ? foods[index + 1]
-                : foods[index - 1];
+              index < foods.length - 1 ? foods[index + 1] : foods[index - 1];
             let prevItem = index > 0 ? foods[index - 1] : foods[0];
             let isDifferentLine = nextItem.name[0] !== firstLetter;
             let isDifferentLetter = prevItem.name[0] !== firstLetter;
 
             return (
-              <View
-                key={index}
-                className={
-                  "p-2 space-y-4" + (isDifferentLine ? " border-b-2 border-gray-200" : "")
-                }
-              >
-                {isDifferentLetter || index === 0 ? (
-                  <Text className="text-xl ml-4">{firstLetter}</Text>
-                ) : null}
-                <View className="flex-row items-center justify-between pl-2">
-                  <View className="flex-row space-x-6">
-                    <Image source={item.image} className="w-12 h-12" />
-                    <View>
-                      <Text className="text-lg">{item.name}</Text>
-                      <Text className="text-sm text-gray-600">{item.calories} cals</Text>
+              <TouchableOpacity onPress={() => handleCreateLog(item)}>
+                <View
+                  key={index}
+                  className={
+                    "p-2 space-y-4" +
+                    (isDifferentLine ? " border-b-2 border-gray-200" : "")
+                  }
+                >
+                  {isDifferentLetter || index === 0 ? (
+                    <Text className="text-xl ml-4">{firstLetter}</Text>
+                  ) : null}
+                  <View className="flex-row items-center justify-between pl-2">
+                    <View className="flex-row space-x-6">
+                      <Image source={item.image} className="w-12 h-12" />
+                      <View>
+                        <Text className="text-lg">{item.name}</Text>
+                        <Text className="text-sm text-gray-600">
+                          {item.calories} cals
+                        </Text>
+                      </View>
                     </View>
+                    <Text className="text-lg text-gray-600">
+                      {formatDate(item.createdAt)}
+                    </Text>
                   </View>
-                  <Text className="text-lg text-gray-600">{formatDate(item.createdAt)}</Text>
                 </View>
-              </View>
+              </TouchableOpacity>
             );
           })}
         <View className="space-y-8">
@@ -452,7 +522,7 @@ export default function AddFoodComponent() {
     <View className="w-full h-full bg-white">
       {tabBarHeader(indexActive, setIndexActive, navigation)}
       {bodySearchTemplate(indexActive, navigation)}
-      {bodyMyFoodsTemplate(indexActive, setIndexActive, navigation)}
+      {bodyMyFoodsTemplate(indexActive, timeToMeal, setIndexActive, navigation)}
       {bodyMealsTemplate(indexActive, timeToMeal)}
       {bodyRecipesTemplate(indexActive, navigation)}
       {footerTemplate(timeToMeal, dataItems, navigation)}
