@@ -291,7 +291,7 @@ function bodyMyFoodsTemplate(
                   ) : null}
                   <View className="flex-row items-center justify-between pl-2">
                     <View className="flex-row space-x-6">
-                      <Image source={item.image} className="w-12 h-12" />
+                      <Image source={{uri:item.image}} className="w-12 h-12" />
                       <View>
                         <Text className="text-lg">{item.name}</Text>
                         <Text className="text-sm text-gray-600">

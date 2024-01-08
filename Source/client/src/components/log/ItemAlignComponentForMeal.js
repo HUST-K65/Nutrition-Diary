@@ -34,7 +34,7 @@ export default function ItemAlignComponentForMeal({
                   return (
                     <Image
                       key={index}
-                      source={item.image}
+                      source={{uri: item.image}}
                       className="w-12 h-12"
                     />
                   );
@@ -60,7 +60,7 @@ export default function ItemAlignComponentForMeal({
                     <View className="flex-row space-x-4">
                       <Image
                         key={index}
-                        source={item.image}
+                        source={{uri: item.image}}
                         className="w-12 h-12"
                       />
                       <View>

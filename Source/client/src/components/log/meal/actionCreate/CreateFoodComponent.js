@@ -63,6 +63,7 @@ export default function CreateFoodComponent() {
   const [fiber, setFiber] = useState();
   const [sugar, setSugar] = useState();
   const [protein, setProtein] = useState();
+  const [image, setImage] = useState();
 
   const textInputRef = useRef(null);
 
@@ -101,7 +102,8 @@ export default function CreateFoodComponent() {
         "userId": user_id,
         "name":name,
         "brand": brand,
-        "calories": calories
+        "calories": calories,
+        "image": image
       }),
     })
       .then(async (response) => {
@@ -219,6 +221,23 @@ export default function CreateFoodComponent() {
             className={
               "rounded-xl p-3 h-16 w-84 " +
               (indexInputFocus === 3
+                ? cssInput.borderFocused
+                : cssInput.borderUnFocused)
+            }
+          ></TextInput>
+          <TextInput
+            placeholder="Image"
+            style={cssInput.styles}
+            onChangeText={(text) => setImage(text)}
+            placeholderTextColor={
+              indexInputFocus === 3
+                ? cssInput.placeholderTextColorFocused
+                : cssInput.placeholderTextColorUnFocused
+            }
+            onFocus={() => setIndexInputFocus(12)}
+            className={
+              "rounded-xl p-3 h-16 w-84 " +
+              (indexInputFocus === 12
                 ? cssInput.borderFocused
                 : cssInput.borderUnFocused)
             }
