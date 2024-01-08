@@ -1,62 +1,62 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Alert, Text, TouchableOpacity, View } from "react-native";
 import * as Icon from "react-native-feather";
 import ItemAlignComponentForMeal from "../../ItemAlignComponentForMeal";
 import MealConstants from "../MealConstants";
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect, useIsFocused } from "@react-navigation/native";
 import { API_URL } from "@env";
 
-export default function MealBreakfastLogComponent() {
+// const fetchData = async (datePickTime, setFoods, setCalories) => {
+//   console.log(window.viewer.id)
+//   console.log(datePickTime)
+//   await fetch(`${API_URL}/mealDiary/getMealDiariesByType`, {
+//     method: "POST",
+//     headers: {
+//       Authorization: `Bearer ${window.viewer.token}`,
+//       "Content-Type": "application/json",
+//     },
+//     body: JSON.stringify({
+//       userId: window.viewer.id,
+//       diaryType: "breakfast",
+//       date: datePickTime,
+//     }),
+//   })
+//     .then(async (response) => {
+//       const res = await response.json();
+//       if (res && res.data && res.data.length) {
+//         console.log(res.data)
+//         setFoods(res.data[0].foods);
+//         setCalories(res.data[0].totalCalories);
+//       }
+//     })
+//     .catch(function (error) {
+//       Alert.alert(
+//         "Error",
+//         error.message,
+//         [
+//           {
+//             text: "Cancel",
+//             style: "cancel",
+//           },
+//         ],
+//         {
+//           cancelable: true,
+//         }
+//       );
+//     });
+// };
+
+
+export default function MealBreakfastLogComponent({ breakfast }) {
   const [collapsed, setCollapsed] = useState(true);
   const [foods, setFoods] = useState([]);
   const [calories, setCalories] = useState(0);
+  const isFocused = useIsFocused();
 
-  const fetchData = async () => {
-    const currentDate = new Date();
-    currentDate.setHours(0, 0, 0, 0);
-    const beginningOfDayTimestamp = currentDate.getTime();
 
-    await fetch(`${API_URL}/mealDiary/getMealDiariesByType`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${window.viewer.token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        userId: window.viewer.id,
-        diaryType: "breakfast",
-        date: beginningOfDayTimestamp,
-      }),
-    })
-      .then(async (response) => {
-        const res = await response.json();
-        if (res && res.data && res.data.length) {
-          setFoods(res.data[0].foods);
-          setCalories(res.data[0].totalCalories);
-        }
-      })
-      .catch(function (error) {
-        Alert.alert(
-          "Error",
-          error.message,
-          [
-            {
-              text: "Cancel",
-              style: "cancel",
-            },
-          ],
-          {
-            cancelable: true,
-          }
-        );
-      });
-  };
-
-  useFocusEffect(
-    useCallback(() => {
-      fetchData();
-    }, [])
-  );
+  // useEffect(() => {
+  //   fetchData(datePickTime, setFoods, setCalories)
+  // }, [isFocused, datePickTime])
 
   return (
     <View className="m-3 p-3 bg-white rounded-2xl">
@@ -73,13 +73,13 @@ export default function MealBreakfastLogComponent() {
             {MealConstants.BREAKFAST}
           </Text>
           <Text className="text-gray-700 text-sm">
-            {calories} calories logged
+            {breakfast.totalCalories} calories logged
           </Text>
         </View>
       </View>
-      {foods && (
+      {breakfast && (
         <ItemAlignComponentForMeal
-          items={foods}
+          items={breakfast}
           collapsed={collapsed}
           category={MealConstants.CATEGORY}
           time={MealConstants.BREAKFAST}

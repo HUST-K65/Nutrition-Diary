@@ -55,6 +55,8 @@ export default function CreateFoodComponent() {
   const [name, setName] = useState();
   const [brand, setBrand] = useState();
   const [calories, setCallories] = useState();
+  const [image, setImage] = useState();
+
   const [fat, setFat] = useState();
   const [saturatedFat, setSaturatedFat] = useState();
   const [cholesterol, setCholesterol] = useState();
@@ -99,17 +101,18 @@ export default function CreateFoodComponent() {
       },
       body: JSON.stringify({
         "userId": user_id,
-        "name":name,
+        "name": name,
         "brand": brand,
-        "calories": calories
+        "calories": calories,
+        "image": "https://i.pinimg.com/736x/57/f9/0f/57f90fb40b3b1872e45f42cb053f2a96.jpg"
       }),
     })
       .then(async (response) => {
         const res = await response.json();
-        if(!res.data){
+        if (!res.data) {
           throw new Error(res.message || "DB Error")
         }
-        
+
         navigation.navigate("AddFood");
       })
       .catch((error) => {
@@ -161,6 +164,24 @@ export default function CreateFoodComponent() {
               className={
                 "rounded-xl p-3 h-16 w-64 " +
                 (indexInputFocus === 1
+                  ? cssInput.borderFocused
+                  : cssInput.borderUnFocused)
+              }
+            ></TextInput>
+            <TextInput
+              ref={textInputRef}
+              placeholder="Image"
+              onChangeText={(text) => setImage(text)}
+              style={cssInput.styles}
+              placeholderTextColor={
+                indexInputFocus === 12
+                  ? cssInput.placeholderTextColorFocused
+                  : cssInput.placeholderTextColorUnFocused
+              }
+              onFocus={() => setIndexInputFocus(12)}
+              className={
+                "rounded-xl p-3 h-16 w-64 " +
+                (indexInputFocus === 12
                   ? cssInput.borderFocused
                   : cssInput.borderUnFocused)
               }

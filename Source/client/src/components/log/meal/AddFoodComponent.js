@@ -17,6 +17,7 @@ import {
   StyleSheet,
 } from "react-native";
 import * as Icon from "react-native-feather";
+import { categories } from '../../../../constants'
 import Feather from "react-native-vector-icons/Feather";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
@@ -276,7 +277,8 @@ function bodyMyFoodsTemplate(
             let prevItem = index > 0 ? foods[index - 1] : foods[0];
             let isDifferentLine = nextItem.name[0] !== firstLetter;
             let isDifferentLetter = prevItem.name[0] !== firstLetter;
-
+            console.log("item", item)
+            let imageSource = item.image ? { uri: item.image.toString() } : categories[0].image;
             return (
               <TouchableOpacity key={index} onPress={() => handleCreateLog(item)}>
                 <View
@@ -291,7 +293,7 @@ function bodyMyFoodsTemplate(
                   ) : null}
                   <View className="flex-row items-center justify-between pl-2">
                     <View className="flex-row space-x-6">
-                      <Image source={item.image} className="w-12 h-12" />
+                      <Image source={imageSource} className="w-12 h-12" />
                       <View>
                         <Text className="text-lg">{item.name}</Text>
                         <Text className="text-sm text-gray-600">
@@ -453,6 +455,7 @@ function footerTemplate(
   navigation = null
 ) {
   let { nameIcon, colorBgIcon } = getCssByTimeToMeal(timeToMeal);
+  console.log(nameIcon)
   if (timeToMeal) {
     return (
       <View className="absolute flex-row items-center justify-between bottom-0 w-full h-16 bg-blue-500 p-2 pr-4 pl-4">
@@ -516,6 +519,7 @@ export default function AddFoodComponent() {
   const navigation = useNavigation();
   let { params } = useRoute();
   let timeToMeal = params?.timeToMeal;
+  console.log("param", params)
   let dataItems = params?.dataItems;
 
   return (

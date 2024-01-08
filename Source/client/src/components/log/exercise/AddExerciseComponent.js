@@ -122,8 +122,7 @@ async function getMyExercises(myExercises, setMyExercises) {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            "userId": window.viewer.id,
-            "date": 1704585600000
+            "userId": window.viewer.id
         })
     }
     ).then(async (response) => {
