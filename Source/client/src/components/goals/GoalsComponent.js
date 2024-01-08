@@ -6,7 +6,7 @@ import { LineChart } from 'react-native-chart-kit'
 const dataWeight = {
     datasets: [
         {
-            data: [12, 30, 23, 12],
+            data: [12],
             color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`, // optional
             strokeWidth: 2 // optional
         }
@@ -17,7 +17,7 @@ const dataWeight = {
 const dataGoals = {
     datasets: [
         {
-            data: [12, 30, 23, 12],
+            data: [12],
             color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`, // optional
             strokeWidth: 2 // optional
         }
@@ -29,10 +29,11 @@ async function getCurrentGoal(setGoals) {
     await fetch("http://10.0.2.2:8000/api/nutrition_diary/v1/goal/getGoal", {
         method: "post",
         headers: {
+            "Authorization": `Bearer ${window.viewer.token}`,
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            "userId": "659a676eaf291d973da3758b"
+            "userId": window.viewer.id
         })
     }
     ).then(async (response) => {
@@ -49,7 +50,7 @@ async function getCurrentGoal(setGoals) {
     })
         .catch(function (error) {
             Alert.alert(
-                'Error',
+                'Error when get current goal',
                 error.message,
                 [
                     {
@@ -154,7 +155,7 @@ export default function GoalsComponent({ setIndexComponentActive }) {
                         goals && goals.length ?
                             goals.map((goal, index) => {
                                 return (
-                                    <View>
+                                    <View key={index}>
                                         <Text key={index} className="text-lg">Goal: {goal.currentGoal}kg  -  Weight: {goal.currentWeight}kg
                                         </Text>
                                         <Text>Log time: {goal.createdAt.substring(0, 10)}</Text>

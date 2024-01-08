@@ -8,10 +8,11 @@ async function handleSave(item, time, caloriesBurn, navigation) {
     await fetch("http://10.0.2.2:8000/api/nutrition_diary/v1/exercise/user", {
         method: "post",
         headers: {
+            "Authorization": `Bearer ${window.viewer.token}`,
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            "userId": "659a676eaf291d973da3758b",
+            "userId": window.viewer.id,
             "exerciseId": item._id,
             "userCalories": caloriesBurn,
             "userExerciseTime": time
@@ -42,8 +43,10 @@ export default function TimeToExercise() {
     let { params } = useRoute();
     const navigation = useNavigation();
     let item = params?.item;
-    const [time, setTime] = useState(item.exerciseTime);
-    let caloriesBurn = (item.calories / item.exerciseTime * time).toFixed(2);
+    let exerciseTime = item.exerciseTime ? item.exerciseTime : item.exercise.exerciseTime;
+    let calories = item.calories ? item.calories : item.exercise.calories;
+    const [time, setTime] = useState(exerciseTime);
+    let caloriesBurn = (calories / exerciseTime * time).toFixed(2);
     return (
         <View className="h-full w-full">
             <View className="absolute flex-row flex-1 h-20 w-full bg-orange-500 items-center justify-between p-3 space-x-8">

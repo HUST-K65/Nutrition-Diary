@@ -8,7 +8,6 @@ function tabBarHeader(indexActive, setIndexActive, navigation = null) {
     const textColorActive = "text-orange-700";
     const textColorInactive = "text-white";
     const bgColorActive = { backgroundColor: "white" }
-    console.log("asdas", indexActive)
     return (
         <View className="bg-orange-500 p-3">
             <View className="flex-row items-center space-x-5 justify-center">

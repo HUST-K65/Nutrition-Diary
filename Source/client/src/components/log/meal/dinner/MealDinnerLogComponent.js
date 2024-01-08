@@ -31,8 +31,10 @@ export default function MealDinnerLogComponent() {
     })
       .then(async (response) => {
         const res = await response.json();
-        setFoods(res.data[0].foods);
-        setCalories(res.data[0].totalCalories);
+        if (res && res.data && res.data.length) {
+          setFoods(res.data[0].foods);
+          setCalories(res.data[0].totalCalories);
+        }
       })
       .catch(function (error) {
         Alert.alert(

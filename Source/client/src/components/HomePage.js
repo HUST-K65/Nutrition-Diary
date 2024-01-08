@@ -16,7 +16,7 @@ export default function HomePage() {
     const [datePick, setDatePick] = useState(null);
     const components = [
         <DashboardComponent />,// indexComponentActive = 0
-        <LogComponent />,   // indexComponentActive = 1,
+        <LogComponent datePick={datePick} />,   // indexComponentActive = 1,
         <GoalsComponent setIndexComponentActive={setIndexComponentActive} />, // indexComponentActive = 2,
         <DiscoverComponent />, // indexComponentActive = 3
     ];

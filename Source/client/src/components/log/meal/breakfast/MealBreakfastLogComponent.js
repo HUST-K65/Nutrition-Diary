@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import {Alert, Text, TouchableOpacity, View } from "react-native";
+import { Alert, Text, TouchableOpacity, View } from "react-native";
 import * as Icon from "react-native-feather";
 import ItemAlignComponentForMeal from "../../ItemAlignComponentForMeal";
 import MealConstants from "../MealConstants";
@@ -30,8 +30,10 @@ export default function MealBreakfastLogComponent() {
     })
       .then(async (response) => {
         const res = await response.json();
-        setFoods(res.data[0].foods);
-        setCalories(res.data[0].totalCalories);
+        if (res && res.data && res.data.length) {
+          setFoods(res.data[0].foods);
+          setCalories(res.data[0].totalCalories);
+        }
       })
       .catch(function (error) {
         Alert.alert(

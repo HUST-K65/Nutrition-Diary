@@ -48,7 +48,7 @@ function tabBarHeader(indexActive, setIndexActive, navigation) {
     )
 }
 
-function bodyMyExerciseTemplate(indexActive, myExercises) {
+function bodyMyExerciseTemplate(indexActive, myExercises, navigation) {
     if (indexActive === 0) {
         const [filter, setFilter] = useState("");
         return (
@@ -90,7 +90,9 @@ function bodyMyExerciseTemplate(indexActive, myExercises) {
                             let isDifferentLetter = prevItem.exercise.name[0] !== firstLetter;
 
                             return (
-                                <TouchableOpacity className={"p-2 m-3 space-y-2" + (isDifferentLine ? " border-b-2 border-gray-200" : "")} key={index}>
+                                <TouchableOpacity className={"p-2 m-3 space-y-2" + (isDifferentLine ? " border-b-2 border-gray-200" : "")} key={index}
+                                    onPress={() => navigation.navigate("TimeToExercise", { item })}
+                                >
                                     {
                                         isDifferentLetter || index === 0 ?
                                             <Text>{item.exercise.name[0].toUpperCase()}</Text>
@@ -116,11 +118,11 @@ async function getMyExercises(myExercises, setMyExercises) {
     await fetch("http://10.0.2.2:8000/api/nutrition_diary/v1/exercise/getUserExercises", {
         method: "post",
         headers: {
-            //"Authorization": `Bearer ${window.viewer.token}`,
+            "Authorization": `Bearer ${window.viewer.token}`,
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            "userId": "659a676eaf291d973da3758b",
+            "userId": window.viewer.id,
             "date": 1704585600000
         })
     }
@@ -152,7 +154,7 @@ async function getAllExercises(allExercises, setAllExercises) {
     await fetch("http://10.0.2.2:8000/api/nutrition_diary/v1/exercise", {
         method: "get",
         headers: {
-            //"Authorization": `Bearer ${window.viewer.token}`,
+            "Authorization": `Bearer ${window.viewer.token}`,
             "Content-Type": "application/json"
         }
     }
@@ -164,7 +166,7 @@ async function getAllExercises(allExercises, setAllExercises) {
     })
         .catch(function (error) {
             Alert.alert(
-                'Error',
+                'Error when get all exercises',
                 error.message,
                 [
                     {
@@ -253,7 +255,7 @@ export default function AddExerciseComponent() {
     return (
         <View>
             {tabBarHeader(indexActive, setIndexActive, navigation)}
-            {bodyMyExerciseTemplate(indexActive, myExercises)}
+            {bodyMyExerciseTemplate(indexActive, myExercises, navigation)}
             {bodyAllExerciseTemplate(indexActive, allExercises, navigation)}
         </View>
     )

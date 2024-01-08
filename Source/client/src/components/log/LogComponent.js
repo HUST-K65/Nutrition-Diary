@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { ScrollView, Text, View } from 'react-native'
+import { ScrollView, Text, View, Alert } from 'react-native'
 import ExerciseLogComponent from './exercise/ExerciseLogComponent'
 import MealLogComponent from './meal/MealLogComponent'
 import HealthLogComponent from './health/HealthLogComponent'
@@ -7,27 +7,28 @@ import { useIsFocused } from '@react-navigation/native'
 
 const caloriesPerKg = 7500;
 
-async function getExercises(setExercises) {
-
+async function getExercises(setExercises, datePickTime) {
     await fetch("http://10.0.2.2:8000/api/nutrition_diary/v1/exercise/getUserExercises", {
         method: "post",
         headers: {
+            "Authorization": `Bearer ${window.viewer.token}`,
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            "userId": "659a676eaf291d973da3758b",
-            "date": 1704585600000
+            "userId": window.viewer.id,
+            "date": datePickTime
         })
     }
     ).then(async (response) => {
         const res = await response.json();
-        if (res && res.data && res.data.length) {
+        if (res && res.data) {
+            console.log(res.data)
             setExercises(res.data)
         }
     })
         .catch(function (error) {
             Alert.alert(
-                'Error',
+                'Error when get exercises',
                 error.message,
                 [
                     {
@@ -46,24 +47,23 @@ async function getCurrentGoal(setCurrentGoal, setCurrentWeight) {
     await fetch("http://10.0.2.2:8000/api/nutrition_diary/v1/goal/getGoal", {
         method: "post",
         headers: {
+            "Authorization": `Bearer ${window.viewer.token}`,
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            "userId": "659a676eaf291d973da3758b"
+            "userId": window.viewer.id
         })
     }
     ).then(async (response) => {
         const res = await response.json();
-        console.log(res)
         if (res && res.data && res.data.length) {
             setCurrentGoal(res.data[0].currentGoal)
             setCurrentWeight(res.data[0].currentWeight);
-
         }
     })
         .catch(function (error) {
             Alert.alert(
-                'Error',
+                'Error when get goal',
                 error.message,
                 [
                     {
@@ -79,16 +79,19 @@ async function getCurrentGoal(setCurrentGoal, setCurrentWeight) {
 }
 
 
-export default function LogComponent() {
+export default function LogComponent({ datePick }) {
     const isFocused = useIsFocused();
     const [exercises, setExercises] = useState([]);
     const [currentGoal, setCurrentGoal] = useState(0);
     const [currentWeight, setCurrentWeight] = useState(0);
 
+    let datePickTime = new Date(datePick);
+    datePickTime = datePickTime.getTime();
+
     useEffect(() => {
         getCurrentGoal(setCurrentGoal, setCurrentWeight)
-        getExercises(setExercises);
-    }, [isFocused])
+        getExercises(setExercises, datePickTime);
+    }, [isFocused, datePickTime])
 
     let budget = Math.ceil((currentGoal - currentWeight) * caloriesPerKg / 30);
     let totalCaloriesExercise = 0;

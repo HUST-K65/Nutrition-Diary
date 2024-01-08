@@ -10,16 +10,16 @@ export default function TabLogDashComponent({ indexComponentActive, datePick, se
     let selected = datePick;
     const today = new Date();
     const startDate = getFormatedDate(
-        today.setDate(today.getDate() + 1),
-        "YYYY/MM/DD"
+        today.setDate(today.getDate()),
+        "YYYY-MM-DD"
     );
 
     if (!datePick) {
         selected = startDate;
-        setDatePick(startDate);
+        setTimeout(() => {
+            setDatePick(startDate);
+        }, 300)
     }
-
-
     const handlePressOK = () => {
         setOpenStartDatePicker(!openStartDatePicker);
         setDatePick(selected);
@@ -71,11 +71,11 @@ export default function TabLogDashComponent({ indexComponentActive, datePick, se
                                 >
                                     <DatePicker
                                         mode="calendar"
-                                        minimumDate={startDate}
+                                        //minimumDate={startDate}
                                         selected={selected}
 
                                         onSelectedChange={(date) => {
-                                            selected = date
+                                            selected = date.replaceAll("/", "-")
                                         }}
                                         options={{
                                             backgroundColor: "#d8ebef",

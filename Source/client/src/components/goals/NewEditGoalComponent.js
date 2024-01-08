@@ -6,17 +6,15 @@ import * as Icon from "react-native-feather";
 async function handleAdd(goal, currentWeight, navigation, setIndexComponentActive, isNew, goalId = null) {
 
     let url = isNew ? "http://10.0.2.2:8000/api/nutrition_diary/v1/goal" : ("http://10.0.2.2:8000/api/nutrition_diary/v1/goal/" + goalId)
-    console.log(url)
     let method = isNew ? "post" : "patch";
     let params = {};
     if (isNew) {
         params = {
-            "userId": "659a676eaf291d973da3758b",
+            "userId": window.viewer.id,
             "currentGoal": goal,
             "currentWeight": currentWeight,
         }
     } else if (goalId) {
-        console.log(goalId)
         params = {
             "goalId": goalId,
             "currentGoal": goal,
@@ -27,13 +25,13 @@ async function handleAdd(goal, currentWeight, navigation, setIndexComponentActiv
     await fetch(url, {
         method: method,
         headers: {
+            "Authorization": `Bearer ${window.viewer.token}`,
             "Content-Type": "application/json"
         },
         body: JSON.stringify(params)
     }
     ).then(async (response) => {
         const res = response.json();
-        console.log(res)
         setIndexComponentActive(2)
         navigation.navigate("Homepage");
     })

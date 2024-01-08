@@ -31,7 +31,6 @@ async function handleSubmit(username, password, navigation = null, isLoading, se
     })
         .catch(function (error) {
             setIsLoading(false);
-            console.log(error.message)
             Alert.alert(
                 'Error',
                 error.message,
@@ -123,7 +122,7 @@ export default function LoginScreen() {
                         entering={FadeInDown.delay(400).duration(1000).springify()}>
 
                         <TouchableOpacity
-                            className="w-full bg-sky-400 p-3 rounded-2xl mb-3"
+                            className="w-full bg-orange-500 p-3 rounded-2xl mb-3"
                             onPress={() => handleSubmit(username, password, navigation, isLoading, setIsLoading)}
                         >
                             <Text className="text-xl font-bold text-white text-center">Login</Text>
@@ -136,7 +135,7 @@ export default function LoginScreen() {
 
                         <Text>Don't have an account? </Text>
                         <TouchableOpacity onPress={() => navigation.push('Signup')}>
-                            <Text className="text-sky-600">SignUp</Text>
+                            <Text className="text-orange-600">SignUp</Text>
                         </TouchableOpacity>
                     </Animated.View>
                 </View>

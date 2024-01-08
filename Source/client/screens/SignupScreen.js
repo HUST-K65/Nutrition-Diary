@@ -67,7 +67,7 @@ export default function SignupScreen() {
                     </Animated.View>
 
                     <Animated.View className="w-full" entering={FadeInDown.delay(600).duration(1000).springify()}>
-                        <TouchableOpacity className="w-full bg-sky-400 p-3 rounded-2xl mb-3">
+                        <TouchableOpacity className="w-full bg-orange-500 p-3 rounded-2xl mb-3">
                             <Text className="text-xl font-bold text-white text-center">SignUp</Text>
                         </TouchableOpacity>
                     </Animated.View>
@@ -78,7 +78,7 @@ export default function SignupScreen() {
 
                         <Text>Already have an account? </Text>
                         <TouchableOpacity onPress={() => navigation.push('Login')}>
-                            <Text className="text-sky-600">Login</Text>
+                            <Text className="text-orange-600">Login</Text>
                         </TouchableOpacity>
 
                     </Animated.View>

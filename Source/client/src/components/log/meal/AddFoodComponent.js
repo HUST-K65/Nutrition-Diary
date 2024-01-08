@@ -187,7 +187,7 @@ function bodyMyFoodsTemplate(
       })
       .catch(function (error) {
         Alert.alert(
-          "Error",
+          "Error when get foods",
           error.message,
           [
             {
@@ -226,10 +226,10 @@ function bodyMyFoodsTemplate(
     })
       .then(async (response) => {
         const res = await response.json();
-        if(!res.data){
+        if (!res.data) {
           throw new Error(res.message)
         }
-        
+
         Alert.alert(
           "Add food to meal success",
           `Successfully add ${food.name} to ${meal}`,
@@ -278,7 +278,7 @@ function bodyMyFoodsTemplate(
             let isDifferentLetter = prevItem.name[0] !== firstLetter;
 
             return (
-              <TouchableOpacity onPress={() => handleCreateLog(item)}>
+              <TouchableOpacity key={index} onPress={() => handleCreateLog(item)}>
                 <View
                   key={index}
                   className={
@@ -408,7 +408,7 @@ function bodyRecipesTemplate(indexActive, navigation) {
             let nextItem =
               index < fakeRecipes.length - 1
                 ? fakeRecipes[index + 1]
-                : foods[index - 1];
+                : fakeRecipes[index - 1];
             let prevItem = index > 0 ? fakeRecipes[index - 1] : fakeRecipes[0];
             let isDifferentLine = nextItem.name[0] !== firstLetter;
             let isDifferentLetter = prevItem.name[0] !== firstLetter;
