@@ -2,7 +2,6 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react'
 import { Text, TextInput, TouchableOpacity, View, Image, ScrollView, Alert } from 'react-native'
 import * as Icon from "react-native-feather";
-import { exercises } from '../../../../constants'
 import Animated, { FadeInLeft, FadeInRight } from 'react-native-reanimated';
 import { useIsFocused } from "@react-navigation/native";
 

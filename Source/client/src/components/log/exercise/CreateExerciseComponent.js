@@ -5,7 +5,6 @@ import { iconsExercise } from '../../../../constants';
 import DropDownPicker from 'react-native-dropdown-picker';
 import * as Icon from "react-native-feather";
 
-
 async function handleSubmitCreate(exerciseName, iconUrl, time, calories, navigation) {
     let messageError = null;
     if (!exerciseName) messageError = "exercise name is a required field"
@@ -180,7 +179,5 @@ export default function CreateExerciseComponent() {
                 </View>
             </View>
         </Modal>
-
     )
-
 }

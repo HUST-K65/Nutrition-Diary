@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Text, View, TouchableOpacity, Alert } from 'react-native'
+import { Text, View, TouchableOpacity } from 'react-native'
 import * as Icon from "react-native-feather";
 import ItemAlignComponentForExercise from '../ItemAlignComponentForExercise';
 
