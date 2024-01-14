@@ -53,7 +53,6 @@ export default function CreateFoodComponent() {
   const navigation = useNavigation();
   let { params } = useRoute();
   let item = params?.item;
-  console.log("item", item)
   const [indexInputFocus, setIndexInputFocus] = useState(1);
   const [selectedCheckbox, setSelectedCheckbox] = useState(false);
 

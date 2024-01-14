@@ -56,10 +56,8 @@ async function getCurrentGoal(setCurrentGoal, setCurrentWeight, datePick) {
     }
     ).then(async (response) => {
         const res = await response.json();
-        console.log(res.data)
         if (res && res.data && res.data.length) {
             let items = res.data.filter(item => datePick === item.createdAt.substring(0, 10));
-            console.log(items)
             setCurrentGoal(items.length ? items[items.length - 1 > 0 ? items.length - 1 : 0].currentGoal : 0)
             setCurrentWeight(items.length ? items[items.length - 1 > 0 ? items.length - 1 : 0].currentWeight : 0);
         }
