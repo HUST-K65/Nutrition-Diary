@@ -1,13 +1,49 @@
 import { useNavigation } from '@react-navigation/native'
 import React from 'react'
-import { Text, View, ScrollView, Image, TouchableOpacity } from 'react-native'
+import { Text, View, ScrollView, Image, TouchableOpacity, Button, Alert } from 'react-native'
 import * as Icon from "react-native-feather";
 import AntDesign from 'react-native-vector-icons/AntDesign'
+import { API_URL } from "@env"
+
+
 
 export default function UserProfileComponent() {
     const navigation = useNavigation();
     const user = window.viewer;
-    console.log(user)
+
+    async function handleLogout() {
+        await fetch("http://10.0.2.2:8000/api/nutrition_diary/v1/auth/logout", {
+            method: "post",
+            headers: {
+                "Content-Type": "application/json"
+            },
+        }
+        ).then(async (response) => {
+            const res = await response.json();
+            if (res.message === "Đăng xuất thành công") {
+                window.viewer = {}
+                navigation.navigate("Login");
+            } else {
+                throw new Error("Unauthorize")
+            }
+        })
+            .catch(function (error) {
+                Alert.alert(
+                    'Error',
+                    error.message,
+                    [
+                        {
+                            text: 'Cancel',
+                            style: 'cancel',
+                        },
+                    ],
+                    {
+                        cancelable: true,
+                    },
+                );
+            });
+    }
+
     return (
         <ScrollView showsVerticalScrollIndicator={false}
         >
@@ -46,6 +82,33 @@ export default function UserProfileComponent() {
                         <Text>{user.role}</Text>
                     </View>
                 </View>
+            </View>
+            <View className="items-center p-3 mt-12">
+                <TouchableOpacity
+                    className="bg-orange-500 p-3 rounded-xl"
+                    onPress={() => {
+                        Alert.alert(
+                            'Warning',
+                            "Are you sure to logout?",
+                            [
+                                {
+                                    text: 'Cancel',
+                                    style: 'cancel',
+                                },
+                                {
+                                    text: 'OK',
+                                    style: 'ok',
+                                    onPress: () => handleLogout()
+                                },
+                            ],
+                            {
+                                cancelable: true,
+                            },
+                        );
+                    }}
+                >
+                    <Text className="text-xl text-white">Logout</Text>
+                </TouchableOpacity>
             </View>
         </ScrollView>
     )
