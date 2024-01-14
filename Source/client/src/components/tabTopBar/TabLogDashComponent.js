@@ -3,9 +3,10 @@ import { Text, TouchableOpacity, TouchableWithoutFeedback, View, Modal, StyleShe
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import DatePicker from "react-native-modern-datepicker";
 import { getFormatedDate } from "react-native-modern-datepicker";
+import { useNavigation } from '@react-navigation/native';
 
 export default function TabLogDashComponent({ indexComponentActive, datePick, setDatePick }) {
-
+    const navigation = useNavigation()
     const [openStartDatePicker, setOpenStartDatePicker] = useState(false);
     let selected = datePick;
     const today = new Date();
@@ -49,11 +50,13 @@ export default function TabLogDashComponent({ indexComponentActive, datePick, se
                 </TouchableOpacity>
 
             </View>
-            <View className="rounded-full bg-gray-400 p-1">
+            <TouchableOpacity className="rounded-full bg-gray-400 p-1"
+                onPress={() => navigation.navigate("UserProfile")}
+            >
                 <AntDesign name="user" size={30} style={{
                     color: "white"
                 }} />
-            </View>
+            </TouchableOpacity>
             {
                 openStartDatePicker ?
                     <Modal

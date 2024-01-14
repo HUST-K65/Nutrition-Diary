@@ -30,18 +30,19 @@ function tabBarHeader(indexActive, setIndexActive, navigation) {
             <View className="flex-1 flex-row items-center justify-center">
                 <TouchableOpacity
                     className="rounded-full pl-12 pr-12 pt-1 pb-1"
-                    style={indexActive === 0 ? bgColorActive : null}
-                    onPress={() => setIndexActive(0)}
-                >
-                    <Text className={indexActive === 0 ? textColorActive : textColorInactive}>My Exercise</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    className="rounded-full pl-12 pr-12 pt-1 pb-1"
                     style={indexActive === 1 ? { backgroundColor: "white" } : null}
                     onPress={() => setIndexActive(1)}
                 >
                     <Text className={indexActive === 1 ? textColorActive : textColorInactive}>All Exercise</Text>
                 </TouchableOpacity>
+                <TouchableOpacity
+                    className="rounded-full pl-12 pr-12 pt-1 pb-1"
+                    style={indexActive === 0 ? bgColorActive : null}
+                    onPress={() => setIndexActive(0)}
+                >
+                    <Text className={indexActive === 0 ? textColorActive : textColorInactive}>Logged Exercises</Text>
+                </TouchableOpacity>
+
             </View>
         </View>
     )

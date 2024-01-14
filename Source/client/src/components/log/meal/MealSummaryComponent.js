@@ -4,84 +4,67 @@ import { Text, View, TouchableOpacity, useWindowDimensions, ScrollView, Image } 
 import * as Icon from "react-native-feather";
 import { PieChart } from 'react-native-chart-kit';
 import Entypo from 'react-native-vector-icons/Entypo';
-import axios from 'axios'
-
-const data = [
-    {
-        name: "Fat",
-        weight: 5,
-        color: "orange",
-        legendFontColor: "#7F727F",
-        legendFontSize: 15
-    },
-    {
-        name: "Carbohydrates",
-        weight: 8,
-        color: "cyan",
-        legendFontColor: "#7F7F7F",
-        legendFontSize: 15
-    },
-    {
-        name: "Protein",
-        weight: 5,
-        color: "purple",
-        legendFontColor: "#7F7F7F",
-        legendFontSize: 15
-    },
-];
+import { categories } from '../../../../constants';
 
 export default function MealSummaryComponent() {
     const navigation = useNavigation();
+
+
     let { params } = useRoute();
     let timeToMeal = params?.timeToMeal;
     let dataItems = params?.dataItems;
+    let totalCalories = 0;
+
+    let saturatedFat = 0;
+    let cholesterol = 0;
+    let sodium = 0;
+
+
+    let fiber = 0;
+    let sugars = 0;
+
+    let protein = 0;
+
+    dataItems.forEach(item => {
+        totalCalories += item.calories;
+
+        saturatedFat = saturatedFat + (item.saturatedFat ? item.saturatedFat : 0);
+        cholesterol = cholesterol + (item.cholesterol ? item.cholesterol / 1000 : 0);
+        sodium = sodium + (item.sodium ? item.sodium / 1000 : 0);
+
+        fiber = fiber + (item.fiber ? item.fiber : 0);
+        sugars = sugars + (item.sugars ? item.sugars : 0);
+
+        protein = protein + (item.protein ? item.protein : 0);
+    })
+
     const { width: screenWidth } = useWindowDimensions();
+    let fat = saturatedFat + cholesterol + sodium;
+    let carbohydrates = fiber + sugars;
 
-    // const options1 = {
-    //     method: 'GET',
-    //     url: 'https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/food/search',
-    //     params: {
-    //         query: 'apple',
-    //         offset: '0',
-    //         number: '10'
-    //     },
-    //     headers: {
-    //         "content-type": "application/json",
-    //         'X-RapidAPI-Key': 'd729d8979bmsh4ebe6f3f79e30dcp1949fdjsn66ca1b67d63c',
-    //         'X-RapidAPI-Host': 'spoonacular-recipe-food-nutrition-v1.p.rapidapi.com'
-    //     }
-    // };
-
-    // const options = {
-    //     method: 'GET',
-    //     url: 'https://dietagram.p.rapidapi.com/apiFood.php',
-    //     params: {
-    //         name: 'Jabłko',
-    //         lang: 'pl'
-    //     },
-    //     headers: {
-    //         "content-type": "application/json",
-    //         'X-RapidAPI-Key': 'd729d8979bmsh4ebe6f3f79e30dcp1949fdjsn66ca1b67d63c',
-    //         'X-RapidAPI-Host': 'dietagram.p.rapidapi.com'
-    //     }
-    // };
-    // const op = {
-    //     method: 'GET',
-    //     url: 'http://www.khanacademy.org/api/v1/topictree?kind=Exercise',
-
-    //     headers: {
-    //         "content-type": "application/json",
-
-    //     }
-    // }
-
-    // try {
-    //     const response = axios.request(op)
-    //         .then(res => console.log("vao res", res.data));
-    //     console.log(response.data);
-    // } catch (error) {
-    //     console.error("vao erroe", error);
-    // }
+    const data = [
+        {
+            name: "Fat",
+            weight: fat,
+            color: "orange",
+            legendFontColor: "#7F727F",
+            legendFontSize: 15
+        },
+        {
+            name: "Carbohydrates",
+            weight: carbohydrates,
+            color: "cyan",
+            legendFontColor: "#7F7F7F",
+            legendFontSize: 15
+        },
+        {
+            name: "Protein",
+            weight: protein,
+            color: "purple",
+            legendFontColor: "#7F7F7F",
+            legendFontSize: 15
+        },
+    ];
 
     return (
         <View className="h-full w-full">
@@ -140,44 +123,45 @@ export default function MealSummaryComponent() {
                             <View>
                                 <View className="flex-row items-center">
                                     <Entypo name="dot-single" size={60} />
-                                    <Text className="font-bold text-xl">5g</Text>
+                                    <Text className="font-bold text-xl">{fat.toFixed(2)} g</Text>
                                 </View>
-                                <Text className="ml-10 text-lg">0g</Text>
-                                <Text className="ml-10 text-lg">0mg</Text>
-                                <Text className="ml-10 text-lg">0mg</Text>
+                                <Text className="ml-10 text-lg">{saturatedFat} g</Text>
+                                <Text className="ml-10 text-lg">{cholesterol} mg</Text>
+                                <Text className="ml-10 text-lg">{sodium} mg</Text>
                             </View>
                             <View>
                                 <View className="flex-row items-center">
                                     <Entypo name="dot-single" size={60} />
-                                    <Text className="font-bold text-xl">8g</Text>
+                                    <Text className="font-bold text-xl">{carbohydrates.toFixed(2)} g</Text>
                                 </View>
-                                <Text className="ml-10 text-lg">0g</Text>
-                                <Text className="ml-10 text-lg">0g</Text>
+                                <Text className="ml-10 text-lg">{fiber} g</Text>
+                                <Text className="ml-10 text-lg">{sugars} g</Text>
                             </View>
                             <View>
                                 <View className="flex-row items-center">
                                     <Entypo name="dot-single" size={60} />
-                                    <Text className="font-bold text-xl">5g</Text>
+                                    <Text className="font-bold text-xl">{protein.toFixed(2)} g</Text>
                                 </View>
                             </View>
                         </View>
                     </View>
                 </View>
-                <Text className="text-2xl">{timeToMeal}: 3.076</Text>
+                <Text className="text-2xl font-bold">{timeToMeal}: {totalCalories} calories</Text>
                 <View className="bg-white rounded-xl p-4 space-y-4">
                     {
                         dataItems && dataItems.length ?
                             dataItems.map((item, index) => {
+                                let imageSource = item && item.image ? { uri: item.image } : categories[0].image;
                                 return (
                                     <View key={index} className="flex-row items-center justify-between">
                                         <View className="flex-row space-x-2">
-                                            <Image source={item.image} className="h-12 w-12" />
+                                            <Image source={imageSource} className="h-12 w-12" />
                                             <View>
                                                 <Text className="text-lg">{item.name}</Text>
                                                 <Text>1 Servings</Text>
                                             </View>
                                         </View>
-                                        <Text>122</Text>
+                                        <Text>{item.calories} calories</Text>
                                     </View>
                                 )
                             })

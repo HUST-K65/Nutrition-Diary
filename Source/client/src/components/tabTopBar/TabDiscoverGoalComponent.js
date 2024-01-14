@@ -1,8 +1,10 @@
+import { useNavigation } from '@react-navigation/native';
 import React from 'react'
-import { Text, View, StyleSheet } from 'react-native'
+import { Text, View, StyleSheet, TouchableOpacity } from 'react-native'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 
 export default function TabDiscoverGoalComponent({ indexComponentActive }) {
+    const navigation = useNavigation();
     let label = indexComponentActive === 2 ? "Goals" : "Discover";
     return (
         <View className="flex-row flex-1 space-x-4 items-center justify-between pl-1 pr-1">
@@ -12,11 +14,13 @@ export default function TabDiscoverGoalComponent({ indexComponentActive }) {
             <View className="flex-row items-center space-x-4">
                 <Text className="text-2xl text-white">{label}</Text>
             </View>
-            <View className="rounded-full bg-gray-400 p-1">
+            <TouchableOpacity className="rounded-full bg-gray-400 p-1"
+                onPress={() => navigation.navigate("UserProfile")}
+            >
                 <AntDesign name="user" size={30} style={{
                     color: "white"
                 }} />
-            </View>
+            </TouchableOpacity>
         </View>
     )
 }

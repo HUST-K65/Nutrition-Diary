@@ -43,7 +43,7 @@ async function getExercises(setExercises, datePickTime) {
         });
 }
 
-async function getCurrentGoal(setCurrentGoal, setCurrentWeight) {
+async function getCurrentGoal(setCurrentGoal, setCurrentWeight, datePick) {
     await fetch("http://10.0.2.2:8000/api/nutrition_diary/v1/goal/getGoal", {
         method: "post",
         headers: {
@@ -56,9 +56,12 @@ async function getCurrentGoal(setCurrentGoal, setCurrentWeight) {
     }
     ).then(async (response) => {
         const res = await response.json();
+        console.log(res.data)
         if (res && res.data && res.data.length) {
-            setCurrentGoal(res.data[0].currentGoal)
-            setCurrentWeight(res.data[0].currentWeight);
+            let items = res.data.filter(item => datePick === item.createdAt.substring(0, 10));
+            console.log(items)
+            setCurrentGoal(items.length ? items[items.length - 1 > 0 ? items.length - 1 : 0].currentGoal : 0)
+            setCurrentWeight(items.length ? items[items.length - 1 > 0 ? items.length - 1 : 0].currentWeight : 0);
         }
     })
         .catch(function (error) {
@@ -93,9 +96,11 @@ const fetchDataFood = async (setBreakfast, setLunch, setDinner, datePickTime) =>
     })
         .then(async (response) => {
             const res = await response.json();
-            if (res && res.data && res.data.length) {
-                res.data[0].foods['totalCalories'] = res.data[0].totalCalories;
-                setBreakfast(res.data[0].foods);
+            if (res && res.data) {
+                if (res.data.length) {
+                    res.data[0].foods['totalCalories'] = res.data[0].totalCalories;
+                    setBreakfast(res.data[0].foods);
+                } else setBreakfast(res.data);
             }
         })
         .catch(function (error) {
@@ -128,9 +133,11 @@ const fetchDataFood = async (setBreakfast, setLunch, setDinner, datePickTime) =>
     })
         .then(async (response) => {
             const res = await response.json();
-            if (res && res.data && res.data.length) {
-                res.data[0].foods['totalCalories'] = res.data[0].totalCalories;
-                setLunch(res.data[0].foods);
+            if (res && res.data) {
+                if (res.data.length) {
+                    res.data[0].foods['totalCalories'] = res.data[0].totalCalories;
+                    setLunch(res.data[0].foods);
+                } else setLunch(res.data);
             }
         })
         .catch(function (error) {
@@ -163,9 +170,11 @@ const fetchDataFood = async (setBreakfast, setLunch, setDinner, datePickTime) =>
     })
         .then(async (response) => {
             const res = await response.json();
-            if (res && res.data && res.data.length) {
-                res.data[0].foods['totalCalories'] = res.data[0].totalCalories;
-                setDinner(res.data[0].foods);
+            if (res && res.data) {
+                if (res.data.length) {
+                    res.data[0].foods['totalCalories'] = res.data[0].totalCalories;
+                    setDinner(res.data[0].foods);
+                } else setDinner(res.data);
             }
         })
         .catch(function (error) {
@@ -199,7 +208,7 @@ export default function LogComponent({ datePick }) {
     datePickTime = datePickTime.getTime();
 
     useEffect(() => {
-        getCurrentGoal(setCurrentGoal, setCurrentWeight)
+        getCurrentGoal(setCurrentGoal, setCurrentWeight, datePick)
         getExercises(setExercises, datePickTime);
         fetchDataFood(setBreakfast, setLunch, setDinner, datePickTime)
     }, [isFocused, datePickTime])
@@ -213,9 +222,9 @@ export default function LogComponent({ datePick }) {
 
     totalCaloriesExercise = Math.ceil(totalCaloriesExercise);
 
-    let totalCaloriesMeal = breakfast ? breakfast.totalCalories : 0;
-    totalCaloriesMeal += (dinner ? dinner.totalCalories : 0);
-    totalCaloriesMeal += (lunch ? lunch.totalCalories : 0);
+    let totalCaloriesMeal = breakfast && breakfast.length ? breakfast.totalCalories : 0;
+    totalCaloriesMeal += (dinner && dinner.length ? dinner.totalCalories : 0);
+    totalCaloriesMeal += (lunch && lunch.length ? lunch.totalCalories : 0);
 
     let net = totalCaloriesMeal - totalCaloriesExercise;
 

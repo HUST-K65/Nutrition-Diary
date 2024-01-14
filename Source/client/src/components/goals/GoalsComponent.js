@@ -77,7 +77,7 @@ export default function GoalsComponent({ setIndexComponentActive }) {
     }, [isFocused])
 
     return (
-        <ScrollView className="space-y-6 mb-24">
+        <ScrollView className="space-y-6 mb-24" showsVerticalScrollIndicator={false}>
             <View className="p-3 rounded-xl bg-white mt-2 space-y-4">
                 <Text className="text-gray-700 font-bold text-xl">Weight</Text>
                 <LineChart

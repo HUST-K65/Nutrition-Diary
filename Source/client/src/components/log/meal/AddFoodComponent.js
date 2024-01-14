@@ -169,7 +169,6 @@ function bodyMyFoodsTemplate(
   navigation
 ) {
   const [foods, setFoods] = useState([]);
-  const [meal, setMeal] = useState(timeToMeal);
 
   const fetchData = async () => {
     await fetch(`${API_URL}/food/getFood`, {
@@ -209,59 +208,6 @@ function bodyMyFoodsTemplate(
     }, [])
   );
 
-  const handleCreateLog = async (food) => {
-    const viewer = window.viewer;
-    const user_id = viewer.id;
-
-    await fetch(`${API_URL}/mealDiary`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${viewer.token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        userId: user_id,
-        foodId: food._id,
-        diaryType: meal,
-      }),
-    })
-      .then(async (response) => {
-        const res = await response.json();
-        if (!res.data) {
-          throw new Error(res.message)
-        }
-
-        Alert.alert(
-          "Add food to meal success",
-          `Successfully add ${food.name} to ${meal}`,
-          [
-            {
-              text: "Cancel",
-              style: "cancel",
-            },
-          ],
-          {
-            cancelable: true,
-          }
-        );
-      })
-      .catch(function (error) {
-        Alert.alert(
-          "Error",
-          error.message,
-          [
-            {
-              text: "Cancel",
-              style: "cancel",
-            },
-          ],
-          {
-            cancelable: true,
-          }
-        );
-      });
-  };
-
   if (indexActive === 1) {
     return (
       <Animated.ScrollView
@@ -270,17 +216,18 @@ function bodyMyFoodsTemplate(
         showsVerticalScrollIndicator={false}
       >
         {foods &&
-          foods.map((item, index) => {
+          foods.sort((a, b) =>
+            a.name[0] < b.name[0] ? 1 : (b.name[0] < a.name[0] ? -1 : 0)
+          ).map((item, index) => {
             let firstLetter = item.name[0];
             let nextItem =
               index < foods.length - 1 ? foods[index + 1] : foods[index - 1];
             let prevItem = index > 0 ? foods[index - 1] : foods[0];
             let isDifferentLine = nextItem.name[0] !== firstLetter;
             let isDifferentLetter = prevItem.name[0] !== firstLetter;
-            console.log("item", item)
             let imageSource = item.image ? { uri: item.image.toString() } : categories[0].image;
             return (
-              <TouchableOpacity key={index} onPress={() => handleCreateLog(item)}>
+              <TouchableOpacity key={index} onPress={() => navigation.navigate("FoodEditServing", { item, timeToMeal })}>
                 <View
                   key={index}
                   className={
@@ -455,7 +402,6 @@ function footerTemplate(
   navigation = null
 ) {
   let { nameIcon, colorBgIcon } = getCssByTimeToMeal(timeToMeal);
-  console.log(nameIcon)
   if (timeToMeal) {
     return (
       <View className="absolute flex-row items-center justify-between bottom-0 w-full h-16 bg-blue-500 p-2 pr-4 pl-4">
@@ -519,7 +465,6 @@ export default function AddFoodComponent() {
   const navigation = useNavigation();
   let { params } = useRoute();
   let timeToMeal = params?.timeToMeal;
-  console.log("param", params)
   let dataItems = params?.dataItems;
 
   return (

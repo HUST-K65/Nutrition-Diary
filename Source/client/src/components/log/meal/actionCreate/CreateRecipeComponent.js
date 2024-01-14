@@ -43,9 +43,9 @@ export default function CreateRecipeComponent() {
                     <TextInput
                         placeholder="Author or Website"
                         style={cssInput.styles}
-                        placeholderTextColor={indexInputFocus === 1 ? cssInput.placeholderTextColorFocused : cssInput.placeholderTextColorUnFocused}
-                        onFocus={() => setIndexInputFocus(1)}
-                        className={"rounded-xl p-3 h-16 w-88 " + (indexInputFocus === 1 ? cssInput.borderFocused : cssInput.borderUnFocused)}
+                        placeholderTextColor={indexInputFocus === 2 ? cssInput.placeholderTextColorFocused : cssInput.placeholderTextColorUnFocused}
+                        onFocus={() => setIndexInputFocus(2)}
+                        className={"rounded-xl p-3 h-16 w-88 " + (indexInputFocus === 2 ? cssInput.borderFocused : cssInput.borderUnFocused)}
                     />
                     <TouchableOpacity
                         onPress={() => navigation.navigate("IconPopup")}

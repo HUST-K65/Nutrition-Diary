@@ -32,6 +32,7 @@ async function handleAdd(goal, currentWeight, navigation, setIndexComponentActiv
     }
     ).then(async (response) => {
         const res = response.json();
+        console.log(res)
         setIndexComponentActive(2)
         navigation.navigate("Homepage");
     })

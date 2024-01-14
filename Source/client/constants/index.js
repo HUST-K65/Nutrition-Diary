@@ -42,6 +42,34 @@ export const categories = [
 
 ]
 
+export const iconFoods = [
+    {
+        name: "Trứng",
+        image: "https://cdn.tgdd.vn/2021/03/CookRecipe/GalleryStep/thanh-pham-736.jpg"
+    },
+    {
+        name: "Bánh mì",
+        image: "https://anhquanbakery.com/uploads/product/full_48nkjk0y-1267-banh-mi-thit-cha-dac-biet.jpg"
+    },
+    {
+        name: "Phở bò",
+        image: "https://cdn.tgdd.vn/Files/2022/01/25/1412805/cach-nau-pho-bo-nam-dinh-chuan-vi-thom-ngon-nhu-hang-quan-202201250230038502.jpg"
+    },
+    {
+        name: "Cà phê",
+        image: "https://suckhoedoisong.qltns.mediacdn.vn/zoom/600_315/Images/duylinh/2018/04/27/ca-phe-loi-hay-hai-cho-suc-khoe1524762701.jpg"
+    },
+    {
+        name: "Kem",
+        image: "https://www.ministop.vn/img/product/icon-web---Dark-chocolate-260px.jpg"
+    },
+    {
+        name: "Cơm",
+        image: "https://cdn.tgdd.vn/2020/10/CookRecipe/GalleryStep/u-com-3.jpg"
+    },
+
+]
+
 export const iconsExercise = [
     {
         id: 1,

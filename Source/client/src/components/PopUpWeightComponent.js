@@ -31,7 +31,7 @@ export default function PopUpWeightComponent() {
                 >
                     <Icon.ArrowLeft stroke="white" strokeWidth={3} />
                 </TouchableOpacity>
-                <Text className="text-white text-2xl">{datePick ?? null}</Text>
+                <Text className="text-white text-2xl">{datePick ? datePick : null}</Text>
                 <Text className="text-white text-sm">Save</Text>
             </View>
             <View className="mt-20 p-3 rounded-full">

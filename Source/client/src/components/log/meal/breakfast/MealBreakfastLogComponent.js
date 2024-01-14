@@ -22,7 +22,7 @@ export default function MealBreakfastLogComponent({ breakfast }) {
             {MealConstants.BREAKFAST}
           </Text>
           <Text className="text-gray-700 text-sm">
-            {breakfast.totalCalories} calories logged
+            {breakfast.totalCalories ? breakfast.totalCalories : 0} calories logged
           </Text>
         </View>
       </View>

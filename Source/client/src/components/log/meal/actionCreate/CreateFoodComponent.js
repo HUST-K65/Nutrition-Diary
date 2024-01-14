@@ -1,6 +1,6 @@
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { API_URL } from "@env";
-import React, { useEffect, useRef, useState, memo, useMemo } from "react";
+import React, { useEffect, useRef, useState, useMemo } from "react";
 import {
   Alert,
   ScrollView,
@@ -8,11 +8,13 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Image
 } from "react-native";
 import * as Icon from "react-native-feather";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import CheckBox from "react-native-check-box";
+import { iconFoods } from "../../../../../constants";
 
 const cssInput = {
   borderFocused: "border-2 border-orange-500",
@@ -49,22 +51,24 @@ const fakeServing = [
 
 export default function CreateFoodComponent() {
   const navigation = useNavigation();
+  let { params } = useRoute();
+  let item = params?.item;
+  console.log("item", item)
   const [indexInputFocus, setIndexInputFocus] = useState(1);
   const [selectedCheckbox, setSelectedCheckbox] = useState(false);
 
-  const [name, setName] = useState();
+  const [name, setName] = useState(item?.name);
   const [brand, setBrand] = useState();
-  const [calories, setCallories] = useState();
-  const [image, setImage] = useState();
+  const [calories, setCallories] = useState(item?.calories);
 
-  const [fat, setFat] = useState();
-  const [saturatedFat, setSaturatedFat] = useState();
-  const [cholesterol, setCholesterol] = useState();
-  const [sodium, setSodium] = useState();
-  const [carbohydrate, setCarbohydrate] = useState();
-  const [fiber, setFiber] = useState();
-  const [sugar, setSugar] = useState();
-  const [protein, setProtein] = useState();
+  const [fat, setFat] = useState(item?.fat);
+  const [saturatedFat, setSaturatedFat] = useState(item?.saturatedFat);
+  const [cholesterol, setCholesterol] = useState(item?.cholesterol);
+  const [sodium, setSodium] = useState(item?.cholesterol);
+  const [carbohydrate, setCarbohydrate] = useState(item?.carbohydrate);
+  const [fiber, setFiber] = useState(item?.fiber);
+  const [sugar, setSugar] = useState(item?.sugar);
+  const [protein, setProtein] = useState(item?.protein);
 
   const textInputRef = useRef(null);
 
@@ -89,31 +93,85 @@ export default function CreateFoodComponent() {
     });
   }, [fakeServing]);
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (item = null) => {
     const viewer = window.viewer;
     const user_id = viewer.id;
+    const food_id = item?._id;
 
-    await fetch(`${API_URL}/food`, {
-      method: "POST",
+    let url = `${API_URL}/food` + `/` + (food_id ? food_id : ``);
+    let bodyParams = {};
+    let methodRequest = "POST"
+    if (item) {
+      methodRequest = "PATCH"
+      bodyParams = {
+        foodId: food_id,
+        name: name,
+        calories: calories,
+        brand: brand,
+        image: item?.image,
+        cholesterol: cholesterol,
+        protein: protein,
+        sodium: sodium,
+        fat: fat,
+        carbohydrate: carbohydrate,
+        fiber: fiber,
+        sugar: sugar,
+        saturatedFat: saturatedFat,
+      }
+    } else {
+      bodyParams = {
+        userId: user_id,
+        name: name,
+        brand: brand,
+        calories: calories,
+        cholesterol: cholesterol,
+        protein: protein,
+        sodium: sodium,
+        fat: fat,
+        carbohydrate: carbohydrate,
+        fiber: fiber,
+        sugar: sugar,
+        saturatedFat: saturatedFat,
+        image: iconFoods[5].image
+      }
+
+    }
+
+    await fetch(url, {
+      method: methodRequest,
       headers: {
         Authorization: `Bearer ${viewer.token}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        "userId": user_id,
-        "name": name,
-        "brand": brand,
-        "calories": calories,
-        "image": "https://i.pinimg.com/736x/57/f9/0f/57f90fb40b3b1872e45f42cb053f2a96.jpg"
-      }),
+      body: JSON.stringify(bodyParams),
     })
       .then(async (response) => {
         const res = await response.json();
-        if (!res.data) {
+        if (res && res.data) {
+          Alert.alert(
+            "Thành công",
+            res.message,
+            [
+              {
+                text: "Cancel",
+                style: "cancel",
+              },
+              {
+                text: "OK",
+                style: "ok",
+                onPress: () => navigation.navigate("AddFood")
+              },
+            ],
+            {
+              cancelable: true,
+            }
+          );
+        }
+        else if (res.message === "Thành công") {
+          navigation.navigate("AddFood");
+        } else if (res.code === 400 || res.code === 500) {
           throw new Error(res.message || "DB Error")
         }
-
-        navigation.navigate("AddFood");
       })
       .catch((error) => {
         Alert.alert(
@@ -138,8 +196,8 @@ export default function CreateFoodComponent() {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Icon.ArrowLeft stroke="white" strokeWidth={3} />
         </TouchableOpacity>
-        <Text className="text-white text-2xl">Create New Food</Text>
-        <TouchableOpacity onPress={() => handleSubmit()}>
+        <Text className="text-white text-2xl">{item ? "Edit Food" : "Create New Food"}</Text>
+        <TouchableOpacity onPress={() => handleSubmit(item)}>
           <Text className="text-white text-sm">Save</Text>
         </TouchableOpacity>
       </View>
@@ -167,25 +225,8 @@ export default function CreateFoodComponent() {
                   ? cssInput.borderFocused
                   : cssInput.borderUnFocused)
               }
-            ></TextInput>
-            <TextInput
-              ref={textInputRef}
-              placeholder="Image"
-              onChangeText={(text) => setImage(text)}
-              style={cssInput.styles}
-              placeholderTextColor={
-                indexInputFocus === 12
-                  ? cssInput.placeholderTextColorFocused
-                  : cssInput.placeholderTextColorUnFocused
-              }
-              onFocus={() => setIndexInputFocus(12)}
-              className={
-                "rounded-xl p-3 h-16 w-64 " +
-                (indexInputFocus === 12
-                  ? cssInput.borderFocused
-                  : cssInput.borderUnFocused)
-              }
-            ></TextInput>
+              defaultValue={item ? item.name : null}
+            />
             <TextInput
               onFocus={() => setIndexInputFocus(2)}
               onChangeText={(text) => setBrand(text)}
@@ -202,7 +243,8 @@ export default function CreateFoodComponent() {
                   ? cssInput.borderFocused
                   : cssInput.borderUnFocused)
               }
-            ></TextInput>
+              defaultValue={item ? item.brand : null}
+            />
           </View>
         </View>
         <View>
@@ -243,7 +285,8 @@ export default function CreateFoodComponent() {
                 ? cssInput.borderFocused
                 : cssInput.borderUnFocused)
             }
-          ></TextInput>
+            defaultValue={calories?.toString()}
+          />
           <View className="flex-row space-x-4">
             <TextInput
               placeholder="Fats (g)"
@@ -261,7 +304,8 @@ export default function CreateFoodComponent() {
                   ? cssInput.borderFocused
                   : cssInput.borderUnFocused)
               }
-            ></TextInput>
+              defaultValue={fat?.toString()}
+            />
             <TextInput
               placeholder="Saturated Fat (g)"
               style={cssInput.styles}
@@ -278,7 +322,8 @@ export default function CreateFoodComponent() {
                   ? cssInput.borderFocused
                   : cssInput.borderUnFocused)
               }
-            ></TextInput>
+              defaultValue={saturatedFat?.toString()}
+            />
           </View>
           <View className="flex-row space-x-4">
             <TextInput
@@ -297,7 +342,8 @@ export default function CreateFoodComponent() {
                   ? cssInput.borderFocused
                   : cssInput.borderUnFocused)
               }
-            ></TextInput>
+              defaultValue={cholesterol?.toString()}
+            />
             <TextInput
               placeholder="Sodium (mg)"
               style={cssInput.styles}
@@ -314,7 +360,8 @@ export default function CreateFoodComponent() {
                   ? cssInput.borderFocused
                   : cssInput.borderUnFocused)
               }
-            ></TextInput>
+              defaultValue={sodium?.toString()}
+            />
           </View>
           <View className="flex-row space-x-4">
             <TextInput
@@ -333,7 +380,8 @@ export default function CreateFoodComponent() {
                   ? cssInput.borderFocused
                   : cssInput.borderUnFocused)
               }
-            ></TextInput>
+              defaultValue={carbohydrate?.toString()}
+            />
             <TextInput
               placeholder="Fiber (mg)"
               style={cssInput.styles}
@@ -350,7 +398,8 @@ export default function CreateFoodComponent() {
                   ? cssInput.borderFocused
                   : cssInput.borderUnFocused)
               }
-            ></TextInput>
+              defaultValue={fiber?.toString()}
+            />
           </View>
           <View className="flex-row space-x-4">
             <TextInput
@@ -369,7 +418,8 @@ export default function CreateFoodComponent() {
                   ? cssInput.borderFocused
                   : cssInput.borderUnFocused)
               }
-            ></TextInput>
+              defaultValue={sugar?.toString()}
+            />
             <TextInput
               placeholder="Protein (g)"
               style={cssInput.styles}
@@ -386,7 +436,8 @@ export default function CreateFoodComponent() {
                   ? cssInput.borderFocused
                   : cssInput.borderUnFocused)
               }
-            ></TextInput>
+              defaultValue={protein?.toString()}
+            />
           </View>
         </View>
         <View className="bg-white space-y-4 p-4 rounded-xl mb-12">

@@ -15,6 +15,10 @@ import CalculationServingComponent from '../src/components/log/meal/CalculationS
 import PopUpWeightComponent from '../src/components/PopUpWeightComponent';
 import TimeToExercise from '../src/components/log/exercise/TimeToExercise';
 import NewEditGoalComponent from '../src/components/goals/NewEditGoalComponent';
+import FoodEditServingComponent from '../src/components/log/meal/FoodEditServingComponent';
+import CommentDetailComponent from '../src/components/discover/groups/CommentDetailComponent';
+import FeedDetailItemComponent from '../src/components/discover/feed/FeedDetailItemComponent';
+import UserProfileComponent from '../src/components/UserProfileComponent';
 
 export default function NavigationRouteContainer({ Stack }) {
     return (
@@ -39,7 +43,11 @@ export default function NavigationRouteContainer({ Stack }) {
                 <Stack.Screen name="CreateCalories" component={CreateCaloriesComponent} options={{ presentation: 'modal' }} />
                 <Stack.Screen name="IconPopup" component={IconPopupComponent} options={{ presentation: 'modal' }} />
                 <Stack.Screen name="CalculationServing" component={CalculationServingComponent} options={{ presentation: 'modal' }} />
+                <Stack.Screen name="FoodEditServing" component={FoodEditServingComponent} options={{ presentation: 'modal' }} />
                 <Stack.Screen name="PopupWeight" component={PopUpWeightComponent} options={{ presentation: 'modal' }} />
+                <Stack.Screen name="CommentDetail" component={CommentDetailComponent} />
+                <Stack.Screen name="FeedDetail" component={FeedDetailItemComponent} />
+                <Stack.Screen name="UserProfile" component={UserProfileComponent} />
             </Stack.Navigator>
         </NavigationContainer>
     )

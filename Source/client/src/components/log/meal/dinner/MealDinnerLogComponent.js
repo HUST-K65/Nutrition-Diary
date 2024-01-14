@@ -21,7 +21,7 @@ export default function MealDinnerLogComponent({ dinner }) {
           <Text className="text-gray-700 font-bold text-lg">
             {MealConstants.DINNER}
           </Text>
-          <Text className="text-gray-700 text-sm">{dinner.totalCalories} calories logged</Text>
+          <Text className="text-gray-700 text-sm">{dinner.totalCalories ? dinner.totalCalories : 0} calories logged</Text>
         </View>
       </View>
       {dinner && (
